@@ -1,9 +1,9 @@
 {
-    "name": "anime-db/worldartru-filler-bundle",
+    "name": "anime-db/worldart-filler-bundle",
     "license": "GPL-3.0",
     "type": "symfony-bundle",
     "description": "Plugin World-Art for the catalog AnimeDB",
-    "homepage": "http://github.com/anime-db/worldartru-bundle",
+    "homepage": "http://github.com/anime-db/worldart-filler-bundle",
     "version": "0.1.0",
     "autoload": {
         "psr-0": { "": "src/" }
@@ -11,13 +11,14 @@
     "repositories": [
         {
             "type": "git",
-            "url": "git@github.com:anime-db/application.git"
+            "url": "git@github.com:anime-db/anime-db.git"
         }
     ],
     "require": {
         "php": ">=5.4.0",
         "ext-tidy": ">=2.0",
         "sensio/buzz-bundle": "dev-master",
-        "anime-db/application": "dev-master"
-    }
+        "anime-db/anime-db": "0.1.*"
+    },
+    "minimum-stability": "dev"
 }
