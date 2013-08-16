@@ -1,4 +1,12 @@
 services:
+    anime_db.worldart.filler:
+        class: AnimeDB\Bundle\WorldArtBundle\Service\Filler
+        arguments: [@buzz.browser, @request, @doctrine, @validator]
+        scope: request
+        tags:
+            -  { name: anime_db.filler }
+            -  { name: anime_db.search }
+
     # cURL client for Buzz
     buzz.client.curl:
         class:  Buzz\Client\Curl
