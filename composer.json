@@ -11,7 +11,7 @@
     "repositories": [
         {
             "type": "git",
-            "url": "git@github.com:anime-db/application.git"
+            "url": "git@github.com:anime-db/anime-db.git"
         }
     ],
     "require": {
@@ -19,5 +19,6 @@
         "ext-tidy": ">=2.0",
         "sensio/buzz-bundle": "dev-master",
         "anime-db/application": "dev-master"
-    }
+    },
+    "minimum-stability": "dev"
 }
