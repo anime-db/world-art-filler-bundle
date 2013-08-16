@@ -1,6 +1,6 @@
 <?php
 
-namespace AnimeDB\Bundle\WorldArtRuBundle\DependencyInjection;
+namespace AnimeDB\Bundle\WorldArtBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class AnimeDBWorldArtRuExtension extends Extension
+class AnimeDBWorldArtExtension extends Extension
 {
     /**
      * {@inheritDoc}
