@@ -8,9 +8,10 @@
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
  */
 
-namespace AnimeDB\Bundle\CatalogBundle\Service;
+namespace AnimeDB\Bundle\WorldArtBundle\Service;
 
-use AnimeDB\Bundle\CatalogBundle\Service\Autofill\Filler as FillerInterface;
+use AnimeDB\Bundle\CatalogBundle\Service\Plugin\Filler\FillerInterface;
+use AnimeDB\Bundle\CatalogBundle\Service\Plugin\Search\Item as ItemSearch;
 use Buzz\Browser;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -25,11 +26,10 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Filesystem\Filesystem;
 use AnimeDB\Bundle\CatalogBundle\Entity\Field\Image as ImageField;
 use Symfony\Component\Validator\Validator;
-use AnimeDB\Bundle\CatalogBundle\Service\Autofill\Search\Item as ItemSearch;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Autofill from site world-art.ru
+ * Filler from site world-art.ru
  * 
  * @link http://world-art.ru/
  * @package AnimeDB\Bundle\WorldArtBundle\Service
@@ -38,11 +38,18 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class Filler implements FillerInterface
 {
     /**
+     * Name
+     *
+     * @var string
+     */
+    const NAME = 'worldart';
+
+    /**
      * Title
      *
      * @var string
      */
-    const NAME = 'World-Art.ru';
+    const TITLE = 'World-Art.ru';
 
     /**
      * Filler http host
@@ -205,12 +212,21 @@ class Filler implements FillerInterface
     }
 
     /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName() {
+        return self::NAME;
+    }
+
+    /**
      * Get title
      *
      * @return string
      */
     public function getTitle() {
-        return self::NAME;
+        return self::TITLE;
     }
 
     /**
@@ -219,7 +235,7 @@ class Filler implements FillerInterface
      * Return structure
      * <code>
      * [
-     *     \AnimeDB\Bundle\CatalogBundle\Service\Autofill\Search\Item
+     *     \AnimeDB\Bundle\CatalogBundle\Service\Plugin\Search\Item
      * ]
      * </code>
      *
