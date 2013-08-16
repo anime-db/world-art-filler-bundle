@@ -8,16 +8,16 @@
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
  */
 
-namespace AnimeDB\Bundle\WorldArtRuBundle;
+namespace AnimeDB\Bundle\WorldArtBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * Bundle
  *
- * @package AnimeDB\Bundle\WorldArtRuBundle
+ * @package AnimeDB\Bundle\WorldArtBundle
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
-class AnimeDBWorldArtRuBundle extends Bundle
+class AnimeDBWorldArtBundle extends Bundle
 {
 }
