@@ -1,6 +1,6 @@
 services:
     anime_db.worldart.filler:
-        class: AnimeDB\Bundle\WorldArtBundle\Service\Filler
+        class: AnimeDB\Bundle\WorldArtFillerBundle\Service\Filler
         arguments: [@buzz.browser, @request, @doctrine, @validator]
         scope: request
         tags:
