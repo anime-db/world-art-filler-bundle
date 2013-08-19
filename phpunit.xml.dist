@@ -13,7 +13,7 @@
 >
 
     <testsuites>
-        <testsuite name="WorldArtBundle Test Suite">
+        <testsuite name="WorldArtFillerBundle Test Suite">
             <directory>./src/*/Bundle/*Bundle/Tests</directory>
         </testsuite>
     </testsuites>

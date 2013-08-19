@@ -8,7 +8,7 @@
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
  */
 
-namespace AnimeDB\Bundle\WorldArtBundle\Service;
+namespace AnimeDB\Bundle\WorldArtFillerBundle\Service;
 
 use AnimeDB\Bundle\CatalogBundle\Service\Plugin\Filler\FillerInterface;
 use AnimeDB\Bundle\CatalogBundle\Service\Plugin\Search\Item as ItemSearch;
@@ -32,7 +32,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Filler from site world-art.ru
  * 
  * @link http://world-art.ru/
- * @package AnimeDB\Bundle\WorldArtBundle\Service
+ * @package AnimeDB\Bundle\WorldArtFillerBundle\Service
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
 class Filler implements FillerInterface
