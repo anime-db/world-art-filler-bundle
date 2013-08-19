@@ -1,6 +1,6 @@
 <?php
 
-namespace AnimeDB\Bundle\WorldArtBundle\DependencyInjection;
+namespace AnimeDB\Bundle\WorldArtFillerBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
