@@ -10,8 +10,8 @@
     },
     "repositories": [
         {
-            "type": "git",
-            "url": "git@github.com:anime-db/anime-db.git"
+            "type": "vcs",
+            "url": "git://github.com/anime-db/anime-db.git"
         }
     ],
     "require": {
