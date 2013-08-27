@@ -10,8 +10,8 @@
 
 namespace AnimeDB\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDB\Bundle\CatalogBundle\Service\Plugin\Filler\FillerInterface;
-use AnimeDB\Bundle\CatalogBundle\Service\Plugin\Search\Item as ItemSearch;
+use AnimeDB\Bundle\CatalogBundle\Plugin\Filler\Filler as FillerPlugin;
+use AnimeDB\Bundle\CatalogBundle\Plugin\Search\Item as ItemSearch;
 use Buzz\Browser;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -35,7 +35,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @package AnimeDB\Bundle\WorldArtFillerBundle\Service
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
-class Filler implements FillerInterface
+class Filler implements FillerPlugin
 {
     /**
      * Name
@@ -232,18 +232,21 @@ class Filler implements FillerInterface
     /**
      * Search source by name
      *
+     * Use $url_bulder for build link to fill item from source or build their own links
+     *
      * Return structure
      * <code>
      * [
-     *     \AnimeDB\Bundle\CatalogBundle\Service\Plugin\Search\Item
+     *     \AnimeDB\Bundle\CatalogBundle\Plugin\Search\Item
      * ]
      * </code>
      *
      * @param string $name
+     * @param \Closure $url_bulder
      *
      * @return array
      */
-    public function search($name)
+    public function search($name, \Closure $url_bulder)
     {
         $name = iconv('utf-8', 'cp1251', $name);
         $url = str_replace('#NAME#', urlencode($name), self::SEARH_URL);
@@ -286,7 +289,7 @@ class Filler implements FillerInterface
             ) {
                 $list[] = new ItemSearch(
                     str_replace(["\r\n", "\n"], ' ', $name),
-                    self::HOST.$href,
+                    $url_bulder(self::HOST.$href),
                     self::HOST.'animation/img/'.(ceil($mat['id']/1000)*1000).'/'.$mat['id'].'/1.jpg',
                     trim(str_replace($name, '', $el->nodeValue))
                 );
