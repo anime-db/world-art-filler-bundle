@@ -5,6 +5,11 @@ services:
         scope: request
         tags:
             -  { name: anime_db.filler }
+    anime_db.worldart.search:
+        class: AnimeDB\Bundle\WorldArtFillerBundle\Service\Search
+        arguments: [@buzz.browser, @request]
+        scope: request
+        tags:
             -  { name: anime_db.search }
 
     # cURL client for Buzz
