@@ -449,7 +449,7 @@ class Filler implements FillerInterface
                     // set type and add file info
                     case 'Тип':
                         $type = $data->childNodes->item($i+1)->nodeValue;
-                        if (preg_match('/(?<type>[\w\s]+)(?: \((?:(?<episodes_number>\>?\d+) эп.)?(?<file_info>.+)\))?, (?<duration>\d{1,3}) мин\.$/u', $type, $match)) {
+                        if (preg_match('/(?<type>[\w\s]+)(?: \((?:(?<episodes_number>>?\d+) эп.)?(?<file_info>.*)\))?, (?<duration>\d{1,3}) мин\.$/u', $type, $match)) {
                             // add type
                             if ($type = $this->getTypeByName(trim($match['type']))) {
                                 $item->setType($type);
