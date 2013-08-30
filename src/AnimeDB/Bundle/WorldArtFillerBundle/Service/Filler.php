@@ -10,7 +10,7 @@
 
 namespace AnimeDB\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDB\Bundle\CatalogBundle\Plugin\Filler\Filler as FillerPlugin;
+use AnimeDB\Bundle\CatalogBundle\Plugin\Filler\CustomForm as CustomFormFiller;
 use Buzz\Browser;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -26,6 +26,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use AnimeDB\Bundle\CatalogBundle\Entity\Field\Image as ImageField;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use AnimeDB\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
 
 /**
  * Filler from site world-art.ru
@@ -34,7 +35,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @package AnimeDB\Bundle\WorldArtFillerBundle\Service
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
-class Filler implements FillerPlugin
+class Filler implements CustomFormFiller
 {
     /**
      * Name
@@ -222,18 +223,28 @@ class Filler implements FillerPlugin
     }
 
     /**
+     * Get form
+     *
+     * @return \AnimeDB\Bundle\WorldArtFillerBundle\Form\Filler
+     */
+    public function getForm()
+    {
+        return new FillerForm();
+    }
+
+    /**
      * Fill item from source
      *
-     * @param string $source
+     * @param array $date
      *
      * @return \AnimeDB\Bundle\CatalogBundle\Entity\Item|null
      */
-    public function fill($source)
+    public function fill($data)
     {
-        if (!$this->isSupportSource($source)) {
+        if (!$this->isSupportSource($data['url'])) {
             return null;
         }
-        $dom = $this->getDomDocumentFromUrl($source);
+        $dom = $this->getDomDocumentFromUrl($data['url']);
         if (!($dom instanceof \DOMDocument)) {
             return null;
         }
@@ -247,14 +258,14 @@ class Filler implements FillerPlugin
 
         // item id from source
         $id = 0;
-        if (preg_match('/id=(?<id>\d+)/', $source, $mat)) {
+        if (preg_match('/id=(?<id>\d+)/', $data['url'], $mat)) {
             $id = (int)$mat['id'];
         }
 
         $item = new Item();
 
         // add source link on world-art
-        $item->addSource((new Source())->setUrl($source));
+        $item->addSource((new Source())->setUrl($data['url']));
 
         // add other source links
         /* @var $links \DOMNodeList */
@@ -277,7 +288,7 @@ class Filler implements FillerPlugin
         $this->fillHeadData($item, $xpath, $head->item(0));
 
         // fill body data
-        $this->fillBodyData($item, $xpath, $body, $id);
+        $this->fillBodyData($item, $xpath, $body, $id, $data['frames']);
         return $item;
     }
 
@@ -432,10 +443,11 @@ class Filler implements FillerPlugin
      * @param \DOMXPath $xpath
      * @param \DOMElement $body
      * @param integer $id
+     * @param boolean $frames
      *
      * @return \AnimeDB\Bundle\CatalogBundle\Entity\Item
      */
-    private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id) {
+    private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames) {
         for ($i = 0; $i < $body->childNodes->length; $i++) {
             if ($value = trim($body->childNodes->item($i)->nodeValue)) {
                 switch ($value) {
@@ -469,7 +481,7 @@ class Filler implements FillerPlugin
                         break;
                     default:
                         // get frames
-                        if (strpos($value, 'кадры из аниме') !== false && $id) {
+                        if (strpos($value, 'кадры из аниме') !== false && $id && $frames) {
                             $dom = $this->getDomDocumentFromUrl(self::HOST.'animation/animation_photos.php?id='.$id);
                             $images = (new \DOMXPath($dom))->query('//table//table//table//img');
                             foreach ($images as $image) {
