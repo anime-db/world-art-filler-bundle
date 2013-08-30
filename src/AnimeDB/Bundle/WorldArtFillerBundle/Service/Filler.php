@@ -10,8 +10,7 @@
 
 namespace AnimeDB\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDB\Bundle\CatalogBundle\Plugin\Filler\Filler as FillerPlugin;
-use AnimeDB\Bundle\CatalogBundle\Plugin\Search\Item as ItemSearch;
+use AnimeDB\Bundle\CatalogBundle\Plugin\Filler\CustomForm as CustomFormFiller;
 use Buzz\Browser;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -27,6 +26,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use AnimeDB\Bundle\CatalogBundle\Entity\Field\Image as ImageField;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use AnimeDB\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
 
 /**
  * Filler from site world-art.ru
@@ -35,7 +35,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @package AnimeDB\Bundle\WorldArtFillerBundle\Service
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
-class Filler implements FillerPlugin
+class Filler implements CustomFormFiller
 {
     /**
      * Name
@@ -64,13 +64,6 @@ class Filler implements FillerPlugin
      * @var string
      */
     const SEARH_URL = 'search.php?public_search=#NAME#&global_sector=animation';
-
-    /**
-     * XPath for list search items
-     *
-     * @var string
-     */
-    const XPATH_FOR_LIST = '//center/table/tr/td/table/tr/td/table/tr/td';
 
     /**
      * XPath for fill item
@@ -230,88 +223,28 @@ class Filler implements FillerPlugin
     }
 
     /**
-     * Search source by name
+     * Get form
      *
-     * Use $url_bulder for build link to fill item from source or build their own links
-     *
-     * Return structure
-     * <code>
-     * [
-     *     \AnimeDB\Bundle\CatalogBundle\Plugin\Search\Item
-     * ]
-     * </code>
-     *
-     * @param string $name
-     * @param \Closure $url_bulder
-     *
-     * @return array
+     * @return \AnimeDB\Bundle\WorldArtFillerBundle\Form\Filler
      */
-    public function search($name, \Closure $url_bulder)
+    public function getForm()
     {
-        $name = iconv('utf-8', 'cp1251', $name);
-        $url = str_replace('#NAME#', urlencode($name), self::SEARH_URL);
-        // get list from xpath
-        $dom = $this->getDomDocumentFromUrl(self::HOST.$url);
-        $xpath = new \DOMXPath($dom);
-
-        // if for request is found only one result is produced forwarding
-        $refresh = $xpath->query('//meta[@http-equiv="Refresh"]/@content');
-        if ($refresh->length) {
-            list(, $url) = explode('url=', $refresh->item(0)->nodeValue, 2);
-            // add http if need
-            if ($url[0] == '/') {
-                $url = self::HOST.substr($url, 1);
-            }
-            $name = iconv('cp1251', 'utf-8', $name);
-            if (!preg_match('/id=(?<id>\d+)/', $url, $mat)) {
-                throw new NotFoundHttpException('Incorrect URL for found item');
-            }
-            return [
-                new ItemSearch(
-                    $name,
-                    $url,
-                    self::HOST.'animation/img/'.(ceil($mat['id']/1000)*1000).'/'.$mat['id'].'/1.jpg',
-                    ''
-                )
-            ];
-        }
-
-        $rows = $xpath->query(self::XPATH_FOR_LIST);
-
-        $list = [];
-        foreach ($rows as $el) {
-            $link = $xpath->query('a', $el);
-            // has link on source
-            if ($link->length &&
-                ($href = $link->item(0)->getAttribute('href')) &&
-                ($name = $link->item(0)->nodeValue) &&
-                preg_match('/id=(?<id>\d+)/', $href, $mat)
-            ) {
-                $list[] = new ItemSearch(
-                    str_replace(["\r\n", "\n"], ' ', $name),
-                    $url_bulder(self::HOST.$href),
-                    self::HOST.'animation/img/'.(ceil($mat['id']/1000)*1000).'/'.$mat['id'].'/1.jpg',
-                    trim(str_replace($name, '', $el->nodeValue))
-                );
-            }
-        }
-
-        return $list;
+        return new FillerForm();
     }
 
     /**
      * Fill item from source
      *
-     * @param string $source
+     * @param array $date
      *
      * @return \AnimeDB\Bundle\CatalogBundle\Entity\Item|null
      */
-    public function fill($source)
+    public function fill($data)
     {
-        if (!$this->isSupportSource($source)) {
+        if (!$this->isSupportSource($data['url'])) {
             return null;
         }
-        $dom = $this->getDomDocumentFromUrl($source);
+        $dom = $this->getDomDocumentFromUrl($data['url']);
         if (!($dom instanceof \DOMDocument)) {
             return null;
         }
@@ -325,14 +258,14 @@ class Filler implements FillerPlugin
 
         // item id from source
         $id = 0;
-        if (preg_match('/id=(?<id>\d+)/', $source, $mat)) {
+        if (preg_match('/id=(?<id>\d+)/', $data['url'], $mat)) {
             $id = (int)$mat['id'];
         }
 
         $item = new Item();
 
         // add source link on world-art
-        $item->addSource((new Source())->setUrl($source));
+        $item->addSource((new Source())->setUrl($data['url']));
 
         // add other source links
         /* @var $links \DOMNodeList */
@@ -355,7 +288,7 @@ class Filler implements FillerPlugin
         $this->fillHeadData($item, $xpath, $head->item(0));
 
         // fill body data
-        $this->fillBodyData($item, $xpath, $body, $id);
+        $this->fillBodyData($item, $xpath, $body, $id, $data['frames']);
         return $item;
     }
 
@@ -452,7 +385,7 @@ class Filler implements FillerPlugin
                     // set type and add file info
                     case 'Тип':
                         $type = $data->childNodes->item($i+1)->nodeValue;
-                        if (preg_match('/(?<type>[\w\s]+)(?: \((?:(?<episodes_number>\>?\d+) эп.)?(?<file_info>.+)\))?, (?<duration>\d{1,3}) мин\.$/u', $type, $match)) {
+                        if (preg_match('/(?<type>[\w\s]+)(?: \((?:(?<episodes_number>>?\d+) эп.)?(?<file_info>.*)\))?, (?<duration>\d{1,3}) мин\.$/u', $type, $match)) {
                             // add type
                             if ($type = $this->getTypeByName(trim($match['type']))) {
                                 $item->setType($type);
@@ -510,10 +443,11 @@ class Filler implements FillerPlugin
      * @param \DOMXPath $xpath
      * @param \DOMElement $body
      * @param integer $id
+     * @param boolean $frames
      *
      * @return \AnimeDB\Bundle\CatalogBundle\Entity\Item
      */
-    private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id) {
+    private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames) {
         for ($i = 0; $i < $body->childNodes->length; $i++) {
             if ($value = trim($body->childNodes->item($i)->nodeValue)) {
                 switch ($value) {
@@ -547,7 +481,7 @@ class Filler implements FillerPlugin
                         break;
                     default:
                         // get frames
-                        if (strpos($value, 'кадры из аниме') !== false && $id) {
+                        if (strpos($value, 'кадры из аниме') !== false && $id && $frames) {
                             $dom = $this->getDomDocumentFromUrl(self::HOST.'animation/animation_photos.php?id='.$id);
                             $images = (new \DOMXPath($dom))->query('//table//table//table//img');
                             foreach ($images as $image) {
