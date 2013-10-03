@@ -42,7 +42,7 @@ class Filler implements CustomFormFiller
      *
      * @var string
      */
-    const NAME = 'worldart';
+    const NAME = 'world-art';
 
     /**
      * Title
