@@ -2,11 +2,11 @@
     "name": "anime-db/world-art-filler-bundle",
     "license": "GPL-3.0",
     "type": "anime-db-plugin",
-    "description": "Plugin World-Art for the catalog AnimeDB",
+    "description": "Plugin World-Art for the catalog Anime DB",
     "homepage": "http://github.com/anime-db/world-art-filler-bundle",
     "version": "0.1.2",
     "autoload": {
-        "psr-0": { "AnimeDB\\Bundle\\WorldArtFillerBundle": "src/" }
+        "psr-0": { "AnimeDb\\Bundle\\WorldArtFillerBundle": "src/" }
     },
     "repositories": [
         {
