@@ -1,28 +1,28 @@
 <?php
 /**
- * AnimeDB package
+ * AnimeDb package
  *
- * @package   AnimeDB
+ * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
  */
 
-namespace AnimeDB\Bundle\WorldArtFillerBundle\Service;
+namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDB\Bundle\CatalogBundle\Plugin\Search\Search as SearchPlugin;
-use AnimeDB\Bundle\CatalogBundle\Plugin\Search\Item as ItemSearch;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Search\Search as SearchPlugin;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Search\Item as ItemSearch;
 use Buzz\Browser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use AnimeDB\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
+use AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 /**
  * Search from site world-art.ru
  * 
  * @link http://world-art.ru/
- * @package AnimeDB\Bundle\WorldArtFillerBundle\Service
+ * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
 class Search implements SearchPlugin
@@ -32,7 +32,7 @@ class Search implements SearchPlugin
      *
      * @var string
      */
-    const NAME = 'worldart';
+    const NAME = 'world-art';
 
     /**
      * Title
@@ -137,7 +137,7 @@ class Search implements SearchPlugin
      * Return structure
      * <code>
      * [
-     *     \AnimeDB\Bundle\CatalogBundle\Plugin\Search\Item
+     *     \AnimeDb\Bundle\CatalogBundle\Plugin\Search\Item
      * ]
      * </code>
      *

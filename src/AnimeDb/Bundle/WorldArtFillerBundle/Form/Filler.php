@@ -1,14 +1,14 @@
 <?php
 /**
- * AnimeDB package
+ * AnimeDb package
  *
- * @package   AnimeDB
+ * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
  */
 
-namespace AnimeDB\Bundle\WorldArtFillerBundle\Form;
+namespace AnimeDb\Bundle\WorldArtFillerBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * Get item from filler
  *
- * @package AnimeDB\Bundle\WorldArtFillerBundle\Form
+ * @package AnimeDb\Bundle\WorldArtFillerBundle\Form
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
 class Filler extends AbstractType

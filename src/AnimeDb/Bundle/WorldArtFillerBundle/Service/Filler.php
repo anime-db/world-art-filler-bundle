@@ -1,38 +1,38 @@
 <?php
 /**
- * AnimeDB package
+ * AnimeDb package
  *
- * @package   AnimeDB
+ * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
  */
 
-namespace AnimeDB\Bundle\WorldArtFillerBundle\Service;
+namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDB\Bundle\CatalogBundle\Plugin\Filler\CustomForm as CustomFormFiller;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Filler\CustomForm as CustomFormFiller;
 use Buzz\Browser;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use AnimeDB\Bundle\CatalogBundle\Entity\Item;
-use AnimeDB\Bundle\CatalogBundle\Entity\Source;
-use AnimeDB\Bundle\CatalogBundle\Entity\Name;
-use AnimeDB\Bundle\CatalogBundle\Entity\Country;
-use AnimeDB\Bundle\CatalogBundle\Entity\Genre;
-use AnimeDB\Bundle\CatalogBundle\Entity\Type;
-use AnimeDB\Bundle\CatalogBundle\Entity\Image;
+use AnimeDb\Bundle\CatalogBundle\Entity\Item;
+use AnimeDb\Bundle\CatalogBundle\Entity\Source;
+use AnimeDb\Bundle\CatalogBundle\Entity\Name;
+use AnimeDb\Bundle\CatalogBundle\Entity\Country;
+use AnimeDb\Bundle\CatalogBundle\Entity\Genre;
+use AnimeDb\Bundle\CatalogBundle\Entity\Type;
+use AnimeDb\Bundle\CatalogBundle\Entity\Image;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Filesystem\Filesystem;
-use AnimeDB\Bundle\CatalogBundle\Entity\Field\Image as ImageField;
+use AnimeDb\Bundle\CatalogBundle\Entity\Field\Image as ImageField;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use AnimeDB\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
+use AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
 
 /**
  * Filler from site world-art.ru
  * 
  * @link http://world-art.ru/
- * @package AnimeDB\Bundle\WorldArtFillerBundle\Service
+ * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
 class Filler implements CustomFormFiller
@@ -42,7 +42,7 @@ class Filler implements CustomFormFiller
      *
      * @var string
      */
-    const NAME = 'worldart';
+    const NAME = 'world-art';
 
     /**
      * Title
@@ -225,7 +225,7 @@ class Filler implements CustomFormFiller
     /**
      * Get form
      *
-     * @return \AnimeDB\Bundle\WorldArtFillerBundle\Form\Filler
+     * @return \AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler
      */
     public function getForm()
     {
@@ -237,7 +237,7 @@ class Filler implements CustomFormFiller
      *
      * @param array $date
      *
-     * @return \AnimeDB\Bundle\CatalogBundle\Entity\Item|null
+     * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item|null
      */
     public function fill($data)
     {
@@ -325,11 +325,11 @@ class Filler implements CustomFormFiller
     /**
      * Fill head data
      *
-     * @param \AnimeDB\Bundle\CatalogBundle\Entity\Item $item
+     * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
      * @param \DOMXPath $xpath
      * @param \DOMElement $head
      *
-     * @return \AnimeDB\Bundle\CatalogBundle\Entity\Item
+     * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
     private function fillHeadData(Item $item, \DOMXPath $xpath, \DOMElement $head) {
         // add main name
@@ -439,13 +439,13 @@ class Filler implements CustomFormFiller
     /**
      * Fill body data
      *
-     * @param \AnimeDB\Bundle\CatalogBundle\Entity\Item $item
+     * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
      * @param \DOMXPath $xpath
      * @param \DOMElement $body
      * @param integer $id
      * @param boolean $frames
      *
-     * @return \AnimeDB\Bundle\CatalogBundle\Entity\Item
+     * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
     private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames) {
         for ($i = 0; $i < $body->childNodes->length; $i++) {
@@ -537,10 +537,10 @@ class Filler implements CustomFormFiller
      *
      * @param integer $id
      *
-     * @return \AnimeDB\Bundle\CatalogBundle\Entity\Country|null
+     * @return \AnimeDb\Bundle\CatalogBundle\Entity\Country|null
      */
     private function getCountryByName($name) {
-        $rep = $this->doctrine->getRepository('AnimeDBCatalogBundle:CountryTranslation');
+        $rep = $this->doctrine->getRepository('AnimeDbCatalogBundle:CountryTranslation');
         if ($country = $rep->findOneBy(['locale' => 'ru', 'content' => $name])) {
             return $country->getObject();
         }
@@ -552,12 +552,12 @@ class Filler implements CustomFormFiller
      *
      * @param string $name
      *
-     * @return \AnimeDB\Bundle\CatalogBundle\Entity\Genre|null
+     * @return \AnimeDb\Bundle\CatalogBundle\Entity\Genre|null
      */
     private function getGenreByName($name) {
         if (isset($this->genres[$name])) {
             return $this->doctrine
-                ->getRepository('AnimeDBCatalogBundle:Genre')
+                ->getRepository('AnimeDbCatalogBundle:Genre')
                 ->findOneByName($this->genres[$name]);
         }
         return null;
@@ -568,12 +568,12 @@ class Filler implements CustomFormFiller
      *
      * @param string $name
      *
-     * @return \AnimeDB\Bundle\CatalogBundle\Entity\Type|null
+     * @return \AnimeDb\Bundle\CatalogBundle\Entity\Type|null
      */
     private function getTypeByName($name) {
         if (isset($this->types[$name])) {
             return $this->doctrine
-                ->getRepository('AnimeDBCatalogBundle:Type')
+                ->getRepository('AnimeDbCatalogBundle:Type')
                 ->find($this->types[$name]);
         }
         return null;
