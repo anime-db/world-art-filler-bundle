@@ -1,6 +1,6 @@
 <?php
 
-namespace AnimeDB\Bundle\WorldArtFillerBundle\DependencyInjection;
+namespace AnimeDb\Bundle\WorldArtFillerBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
