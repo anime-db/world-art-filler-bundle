@@ -1,11 +1,11 @@
 services:
-    anime_db.worldart.filler:
+    anime_db.world_art.filler:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler
         arguments: [@buzz.browser, @request, @doctrine, @validator]
         scope: request
         tags:
             -  { name: anime_db.filler }
-    anime_db.worldart.search:
+    anime_db.world_art.search:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Search
         arguments: [@buzz.browser, @request, @router]
         scope: request
