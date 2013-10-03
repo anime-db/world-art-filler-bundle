@@ -32,7 +32,7 @@ class Search implements SearchPlugin
      *
      * @var string
      */
-    const NAME = 'worldart';
+    const NAME = 'world-art';
 
     /**
      * Title
