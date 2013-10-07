@@ -187,7 +187,6 @@ class Filler implements CustomFormFiller
      * Construct
      *
      * @param \Buzz\Browser $browser
-     * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
      * @param \Symfony\Component\Validator\Validator $validator
      */
@@ -198,10 +197,19 @@ class Filler implements CustomFormFiller
         Validator $validator
     ) {
         $this->browser  = $browser;
-        $this->request  = $request;
         $this->doctrine = $doctrine;
         $this->validator = $validator;
         $this->fs = new Filesystem();
+    }
+
+    /**
+     * Set request
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function setRequest(Request $request = null)
+    {
+        $this->request = $request;
     }
 
     /**
@@ -616,10 +624,11 @@ class Filler implements CustomFormFiller
      * @param string $url
      */
     private function getContentFromUrl($url) {
-        // send headers from original request
-        $headers = [
-            'User-Agent' => $this->request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT)
-        ];
+        $headers = ['User-Agent' => self::DEFAULT_USER_AGENT];
+        // try to set User-Agent from original request
+        if ($this->request) {
+            $headers['User-Agent'] = $this->request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT);
+        }
         /* @var $response \Buzz\Message\Response */
         $response = $this->browser->get($url, $headers);
         if ($response->getStatusCode() !== 200 || !($html = $response->getContent())) {
