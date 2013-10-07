@@ -101,14 +101,22 @@ class Search implements SearchPlugin
      * Construct
      *
      * @param \Buzz\Browser $browser
-     * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Bundle\FrameworkBundle\Routing\Router $router
      */
-    public function __construct(Browser $browser, Request $request, Router $router) {
+    public function __construct(Browser $browser, Router $router) {
         $this->browser = $browser;
-        $this->request = $request;
         $this->route = $router;
         $this->form_name = (new FillerForm())->getName();
+    }
+
+    /**
+     * Set request
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function setRequest(Request $request = null)
+    {
+        $this->request = $request;
     }
 
     /**
@@ -225,10 +233,11 @@ class Search implements SearchPlugin
      * @param string $url
      */
     private function getContentFromUrl($url) {
-        // send headers from original request
-        $headers = [
-            'User-Agent' => $this->request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT)
-        ];
+        $headers = ['User-Agent' => self::DEFAULT_USER_AGENT];
+        // try to set User-Agent from original request
+        if ($this->request) {
+            $headers['User-Agent'] = $this->request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT);
+        }
         /* @var $response \Buzz\Message\Response */
         $response = $this->browser->get($url, $headers);
         if ($response->getStatusCode() !== 200 || !($html = $response->getContent())) {
