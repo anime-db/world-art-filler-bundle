@@ -154,8 +154,8 @@ class Search extends SearchPlugin
             }
             return [
                 new ItemSearch(
-                    $this->getLinkForFill($name),
-                    $url,
+                    $name,
+                    $this->getLinkForFill($url),
                     self::HOST.'animation/img/'.(ceil($mat['id']/1000)*1000).'/'.$mat['id'].'/1.jpg',
                     ''
                 )
