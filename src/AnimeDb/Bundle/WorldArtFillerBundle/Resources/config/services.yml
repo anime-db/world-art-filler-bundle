@@ -1,22 +1,26 @@
 services:
     anime_db.world_art.filler:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler
-        arguments: [@buzz.browser, @doctrine, @validator]
+        arguments: [@anime_db.world_art.browser, @doctrine, @validator]
         tags:
             -  { name: anime_db.filler }
         calls:
-            - [setRequest, ['@?request=']]
             - [setRouter, ['@router']]
 
     anime_db.world_art.search:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Search
-        arguments: [@buzz.browser]
+        arguments: [@anime_db.world_art.browser]
         tags:
             -  { name: anime_db.search }
         calls:
-            - [setRequest, ['@?request=']]
             - [setRouter, ['@router']]
             - [setFiller, ['@anime_db.world_art.filler']]
+
+    anime_db.world_art.browser:
+        class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
+        arguments: [@buzz.browser]
+        calls:
+            - [setRequest, ['@?request=']]
 
 
     # cURL client for Buzz

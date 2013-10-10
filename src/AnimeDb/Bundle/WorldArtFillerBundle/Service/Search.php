@@ -12,8 +12,6 @@ namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
 use AnimeDb\Bundle\CatalogBundle\Plugin\Search\Search as SearchPlugin;
 use AnimeDb\Bundle\CatalogBundle\Plugin\Search\Item as ItemSearch;
-use Buzz\Browser;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -70,34 +68,17 @@ class Search extends SearchPlugin
     /**
      * Browser
      *
-     * @var \Buzz\Browser
+     * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
      */
     private $browser;
 
     /**
-     * Request
-     *
-     * @var \Symfony\Component\HttpFoundation\Request
-     */
-    private $request;
-
-    /**
      * Construct
      *
-     * @param \Buzz\Browser $browser
+     * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
      */
     public function __construct(Browser $browser) {
         $this->browser = $browser;
-    }
-
-    /**
-     * Set request
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     */
-    public function setRequest(Request $request = null)
-    {
-        $this->request = $request;
     }
 
     /**
@@ -137,7 +118,7 @@ class Search extends SearchPlugin
         $name = iconv('utf-8', 'cp1251', $data['name']);
         $url = str_replace('#NAME#', urlencode($name), self::SEARH_URL);
         // get list from xpath
-        $dom = $this->getDomDocumentFromUrl(self::HOST.$url);
+        $dom = $this->browser->getDom(self::HOST.$url);
         $xpath = new \DOMXPath($dom);
 
         // if for request is found only one result is produced forwarding
@@ -183,63 +164,5 @@ class Search extends SearchPlugin
         }
 
         return $list;
-    }
-
-    /**
-     * Get DOMDocument from url
-     *
-     * Receive content from the URL, cleaning using Tidy and creating DOM document
-     *
-     * @param string $url
-     *
-     * @return \DOMDocument|null
-     */
-    private function getDomDocumentFromUrl($url) {
-        $dom = new \DOMDocument('1.0', 'utf8');
-        if (($content = $this->getContentFromUrl($url)) && $dom->loadHTML($content)) {
-            return $dom;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Get content from url
-     *
-     * Receive content from the URL and cleaning using Tidy
-     *
-     * @param string $url
-     */
-    private function getContentFromUrl($url) {
-        $headers = ['User-Agent' => self::DEFAULT_USER_AGENT];
-        // try to set User-Agent from original request
-        if ($this->request) {
-            $headers['User-Agent'] = $this->request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT);
-        }
-        /* @var $response \Buzz\Message\Response */
-        $response = $this->browser->get($url, $headers);
-        if ($response->getStatusCode() !== 200 || !($html = $response->getContent())) {
-            return null;
-        }
-        $html = iconv('windows-1251', 'utf-8', $html);
-
-        // clean content
-        $config = [
-            'output-xhtml' => true,
-            'indent' => true,
-            'indent-spaces' => 0,
-            'fix-backslash' => true,
-            'hide-comments' => true,
-            'drop-empty-paras' => true,
-        ];
-        $tidy = new \tidy();
-        $tidy->ParseString($html, $config, 'utf8');
-        $tidy->cleanRepair();
-        $html = $tidy->root()->value;
-        // ignore blocks
-        $html = preg_replace('/<noembed>.*?<\/noembed>/is', '', $html);
-        $html = preg_replace('/<noindex>.*?<\/noindex>/is', '', $html);
-        // remove noembed
-        return $html;
     }
 }
