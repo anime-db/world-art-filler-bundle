@@ -6,13 +6,18 @@ services:
             -  { name: anime_db.filler }
         calls:
             - [setRequest, ['@?request=']]
+            - [setRouter, ['@router']]
+
     anime_db.world_art.search:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Search
-        arguments: [@buzz.browser, @router]
+        arguments: [@buzz.browser]
         tags:
             -  { name: anime_db.search }
         calls:
             - [setRequest, ['@?request=']]
+            - [setRouter, ['@router']]
+            - [setFiller, ['@anime_db.world_art.filler']]
+
 
     # cURL client for Buzz
     buzz.client.curl:

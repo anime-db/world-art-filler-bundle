@@ -15,8 +15,6 @@ use AnimeDb\Bundle\CatalogBundle\Plugin\Search\Item as ItemSearch;
 use Buzz\Browser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 /**
  * Search from site world-art.ru
@@ -25,7 +23,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
  * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
-class Search implements SearchPlugin
+class Search extends SearchPlugin
 {
     /**
      * Name
@@ -84,29 +82,12 @@ class Search implements SearchPlugin
     private $request;
 
     /**
-     * Fill form name
-     *
-     * @var string
-     */
-    private $form_name;
-
-    /**
-     * Router
-     *
-     * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
-     */
-    private $route;
-
-    /**
      * Construct
      *
      * @param \Buzz\Browser $browser
-     * @param \Symfony\Bundle\FrameworkBundle\Routing\Router $router
      */
-    public function __construct(Browser $browser, Router $router) {
+    public function __construct(Browser $browser) {
         $this->browser = $browser;
-        $this->route = $router;
-        $this->form_name = (new FillerForm())->getName();
     }
 
     /**
@@ -140,8 +121,6 @@ class Search implements SearchPlugin
     /**
      * Search source by name
      *
-     * Use $url_bulder for build link to fill item from source or build their own links
-     *
      * Return structure
      * <code>
      * [
@@ -149,14 +128,13 @@ class Search implements SearchPlugin
      * ]
      * </code>
      *
-     * @param string $name
-     * @param \Closure $url_bulder
+     * @param array $data
      *
      * @return array
      */
-    public function search($name, \Closure $url_bulder)
+    public function search(array $data)
     {
-        $name = iconv('utf-8', 'cp1251', $name);
+        $name = iconv('utf-8', 'cp1251', $data['name']);
         $url = str_replace('#NAME#', urlencode($name), self::SEARH_URL);
         // get list from xpath
         $dom = $this->getDomDocumentFromUrl(self::HOST.$url);
@@ -177,7 +155,7 @@ class Search implements SearchPlugin
             return [
                 new ItemSearch(
                     $name,
-                    $url,
+                    $this->getLinkForFill($url),
                     self::HOST.'animation/img/'.(ceil($mat['id']/1000)*1000).'/'.$mat['id'].'/1.jpg',
                     ''
                 )
@@ -197,7 +175,7 @@ class Search implements SearchPlugin
             ) {
                 $list[] = new ItemSearch(
                     str_replace(["\r\n", "\n"], ' ', $name),
-                    $this->getUrlFromSource(self::HOST.$href),
+                    $this->getLinkForFill(self::HOST.$href),
                     self::HOST.'animation/img/'.(ceil($mat['id']/1000)*1000).'/'.$mat['id'].'/1.jpg',
                     trim(str_replace($name, '', $el->nodeValue))
                 );
@@ -263,22 +241,5 @@ class Search implements SearchPlugin
         $html = preg_replace('/<noindex>.*?<\/noindex>/is', '', $html);
         // remove noembed
         return $html;
-    }
-
-    /**
-     * Get url for fill item from source
-     *
-     * @param string $source
-     *
-     * @return string
-     */
-    private function getUrlFromSource($source) {
-        return $this->route->generate(
-            'item_filler',
-            [
-                'plugin' => $this->getName(),
-                $this->form_name => ['url' => $source]
-            ]
-        );
     }
 }

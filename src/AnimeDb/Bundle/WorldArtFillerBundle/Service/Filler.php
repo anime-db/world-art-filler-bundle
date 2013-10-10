@@ -10,7 +10,7 @@
 
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDb\Bundle\CatalogBundle\Plugin\Filler\CustomForm as CustomFormFiller;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Filler\Filler as FillerPlugin;
 use Buzz\Browser;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -35,7 +35,7 @@ use AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
  * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
-class Filler implements CustomFormFiller
+class Filler extends FillerPlugin
 {
     /**
      * Name
@@ -246,11 +246,12 @@ class Filler implements CustomFormFiller
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item|null
      */
-    public function fill($data)
+    public function fill(array $data)
     {
-        if (!$this->isSupportSource($data['url'])) {
+        if (empty($data['url']) || !is_string($data['url']) || strpos($data['url'], self::HOST) !== 0) {
             return null;
         }
+
         $dom = $this->getDomDocumentFromUrl($data['url']);
         if (!($dom instanceof \DOMDocument)) {
             return null;
@@ -584,17 +585,6 @@ class Filler implements CustomFormFiller
                 ->find($this->types[$name]);
         }
         return null;
-    }
-
-    /**
-     * Filler is support this source
-     *
-     * @param string $source
-     *
-     * @return boolean
-     */
-    public function isSupportSource($source) {
-        return is_string($source) && strpos($source, self::HOST) === 0;
     }
 
     /**
