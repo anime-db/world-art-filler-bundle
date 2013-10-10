@@ -249,7 +249,7 @@ class Filler extends FillerPlugin
      */
     public function fill(array $data)
     {
-        if (!empty($data['url']) || !is_string($source) || strpos($data['url'], self::HOST) !== 0) {
+        if (empty($data['url']) || !is_string($data['url']) || strpos($data['url'], self::HOST) !== 0) {
             return null;
         }
 
