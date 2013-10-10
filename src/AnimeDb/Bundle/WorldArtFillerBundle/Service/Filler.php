@@ -183,7 +183,6 @@ class Filler extends FillerPlugin
      */
     public function __construct(
         Browser $browser,
-        Request $request,
         Registry $doctrine,
         Validator $validator
     ) {
