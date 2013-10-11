@@ -11,7 +11,7 @@
     "require": {
         "php": ">=5.4.0",
         "ext-tidy": ">=2.0",
-        "sensio/buzz-bundle": "dev-master",
+        "sensio/buzz-bundle": "1.0.*",
         "anime-db/anime-db": "0.2.*"
     }
 }
