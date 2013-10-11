@@ -8,16 +8,10 @@
     "autoload": {
         "psr-0": { "AnimeDb\\Bundle\\WorldArtFillerBundle": "src/" }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git://github.com/anime-db/anime-db.git"
-        }
-    ],
     "require": {
         "php": ">=5.4.0",
         "ext-tidy": ">=2.0",
-        "sensio/buzz-bundle": "dev-master",
+        "sensio/buzz-bundle": "1.0.*",
         "anime-db/anime-db": "0.2.*"
     },
     "minimum-stability": "dev"
