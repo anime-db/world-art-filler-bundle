@@ -13,5 +13,6 @@
         "ext-tidy": ">=2.0",
         "sensio/buzz-bundle": "1.0.*",
         "anime-db/anime-db": "0.2.*"
-    }
+    },
+    "minimum-stability": "dev"
 }
