@@ -10,7 +10,7 @@
 
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDb\Bundle\CatalogBundle\Plugin\Filler\Filler as FillerPlugin;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Filler\Filler as FillerPlugin;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use AnimeDb\Bundle\CatalogBundle\Entity\Item;
 use AnimeDb\Bundle\CatalogBundle\Entity\Source;
