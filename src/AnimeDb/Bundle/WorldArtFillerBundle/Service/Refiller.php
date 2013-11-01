@@ -97,7 +97,13 @@ class Refiller extends RefillerPlugin
      */
     public function isCanRefillFromSource(Item $item, $field)
     {
-        return true;
+        /* @var $source \AnimeDb\Bundle\CatalogBundle\Entity\Source */
+        foreach ($item->getSources() as $source) {
+            if (strpos($source->getUrl(), self::HOST) === 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -123,7 +129,16 @@ class Refiller extends RefillerPlugin
      */
     public function isCanSearch(Item $item, $field)
     {
-        return true;
+        if ($this->isCanRefillFromSource($item, $field) || $item->getName()) {
+            return true;
+        }
+        /* @var $name \AnimeDb\Bundle\CatalogBundle\Entity\Name */
+        foreach ($item->getNames() as $name) {
+            if ($name->getName()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
