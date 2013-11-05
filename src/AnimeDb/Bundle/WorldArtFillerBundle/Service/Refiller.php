@@ -193,11 +193,12 @@ class Refiller extends RefillerPlugin
         // do search
         if ($name) {
             $result = $this->search->search(['name' => $name]);
+            $empty_link = $this->search->getLinkForFill('');
             /* @var $item \AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Item */
             foreach ($result as $key => $item) {
                 $result[$key] = new ItemRefiller(
                     $item->getName(),
-                    ['url' => $item->getLink()],
+                    ['url' => urldecode(str_replace($empty_link, '', $item->getLink()))],
                     $item->getImage(),
                     $item->getDescription()
                 );
