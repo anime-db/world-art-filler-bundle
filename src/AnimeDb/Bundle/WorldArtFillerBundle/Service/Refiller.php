@@ -218,9 +218,9 @@ class Refiller extends RefillerPlugin
      */
     public function refillFromSearchResult(Item $item, $field, array $data)
     {
-        if (!empty($data['utl'])) {
+        if (!empty($data['url'])) {
             $source = new Source();
-            $source->setUrl($data['utl']);
+            $source->setUrl($data['url']);
             $item->addSource($source);
             $new_item = $this->refillFromSource($item, $field);
             $item = $this->fillItem($item, $new_item, $field);
