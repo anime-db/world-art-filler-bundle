@@ -11,7 +11,9 @@
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
 use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Refiller\Refiller as RefillerPlugin;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Refiller\Item as ItemRefiller;
 use AnimeDb\Bundle\CatalogBundle\Entity\Item;
+use AnimeDb\Bundle\CatalogBundle\Entity\Source;
 
 /**
  * Refiller from site world-art.ru
@@ -116,6 +118,18 @@ class Refiller extends RefillerPlugin
      */
     public function refillFromSource(Item $item, $field)
     {
+        // get source url
+        $url = '';
+        foreach ($item->getSources() as $source) {
+            if (strpos($source->getUrl(), self::HOST) === 0) {
+                $url = $source->getUrl();
+                break;
+            }
+        }
+
+        if ($url && ($new_item = $this->filler->fill(['url' => $url, 'frames' => false]))) {
+            $item = $this->fillItem($item, $new_item, $field);
+        }
         return $item;
     }
 
@@ -151,7 +165,46 @@ class Refiller extends RefillerPlugin
      */
     public function search(Item $item, $field)
     {
-        return [];
+        // search source url
+        $url = '';
+        foreach ($item->getSources() as $source) {
+            if (strpos($source->getUrl(), self::HOST) === 0) {
+                $url = $source->getUrl();
+                break;
+            }
+        }
+        // can refill from source. not need search
+        if ($url) {
+            return [
+                new ItemRefiller($item->getName(), ['url' => $url], $item->getCoverWebPath(), $item->getSummary())
+            ];
+        }
+
+        // get name for search
+        if (!($name = $item->getName())) {
+            foreach ($item->getNames() as $name) {
+                if ($name) {
+                    break;
+                }
+            }
+        }
+
+        $result = [];
+        // do search
+        if ($name) {
+            $result = $this->search->search(['name' => $name]);
+            /* @var $item \AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Item */
+            foreach ($result as $key => $item) {
+                $result[$key] = new ItemRefiller(
+                    $item->getName(),
+                    ['url' => $item->getLink()],
+                    $item->getImage(),
+                    $item->getDescription()
+                );
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -165,6 +218,61 @@ class Refiller extends RefillerPlugin
      */
     public function refillFromSearchResult(Item $item, $field, array $data)
     {
+        if (!empty($data['utl'])) {
+            $source = new Source();
+            $source->setUrl($data['utl']);
+            $item->addSource($source);
+            $new_item = $this->refillFromSource($item, $field);
+            $item = $this->fillItem($item, $new_item, $field);
+        }
+        return $item;
+    }
+
+    /**
+     * Fill item
+     *
+     * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
+     * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $new_item
+     * @param string $field
+     *
+     * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
+     */
+    protected function fillItem(Item $item, Item $new_item, $field)
+    {
+        switch ($field) {
+            case self::FIELD_SUMMARY:
+                $item->setSummary($new_item->getSummary());
+                break;
+            case self::FIELD_EPISODES:
+                $item->setEpisodes($new_item->getEpisodes());
+                break;
+            case self::FIELD_GENRES:
+                /* @var $new_genre \AnimeDb\Bundle\CatalogBundle\Entity\Genre */
+                foreach ($new_item->getGenres() as $new_genre) {
+                    // check of the existence of the genre
+                    /* @var $genre \AnimeDb\Bundle\CatalogBundle\Entity\Genre */
+                    foreach ($item->getGenres() as $genre) {
+                        if ($new_genre->getName() == $genre->getName()) {
+                            continue 2;
+                        }
+                    }
+                    $item->addGenre($new_genre);
+                }
+                break;
+            case self::FIELD_NAMES:
+                /* @var $new_name \AnimeDb\Bundle\CatalogBundle\Entity\Name */
+                foreach ($new_item->getNames() as $new_name) {
+                    // check of the existence of the name
+                    /* @var $name \AnimeDb\Bundle\CatalogBundle\Entity\Name */
+                    foreach ($item->getNames() as $name) {
+                        if ($new_name->getName() == $name->getName()) {
+                            continue 2;
+                        }
+                    }
+                    $item->addName($new_name);
+                }
+                break;
+        }
         return $item;
     }
 }
