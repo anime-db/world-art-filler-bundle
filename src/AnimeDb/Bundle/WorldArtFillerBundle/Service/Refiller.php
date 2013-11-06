@@ -97,7 +97,7 @@ class Refiller extends RefillerPlugin
      *
      * @return boolean
      */
-    public function isCanRefillFromSource(Item $item, $field)
+    public function isCanRefill(Item $item, $field)
     {
         /* @var $source \AnimeDb\Bundle\CatalogBundle\Entity\Source */
         foreach ($item->getSources() as $source) {
@@ -116,7 +116,7 @@ class Refiller extends RefillerPlugin
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
-    public function refillFromSource(Item $item, $field)
+    public function refill(Item $item, $field)
     {
         // get source url
         $url = '';
@@ -143,7 +143,7 @@ class Refiller extends RefillerPlugin
      */
     public function isCanSearch(Item $item, $field)
     {
-        if ($this->isCanRefillFromSource($item, $field) || $item->getName()) {
+        if ($this->isCanRefill($item, $field) || $item->getName()) {
             return true;
         }
         /* @var $name \AnimeDb\Bundle\CatalogBundle\Entity\Name */
@@ -223,7 +223,7 @@ class Refiller extends RefillerPlugin
             $source = new Source();
             $source->setUrl($data['url']);
             $item->addSource($source);
-            $new_item = $this->refillFromSource($item, $field);
+            $new_item = $this->refill($item, $field);
             $item = $this->fillItem($item, $new_item, $field);
         }
         return $item;
