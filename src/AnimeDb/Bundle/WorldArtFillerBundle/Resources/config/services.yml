@@ -24,7 +24,7 @@ services:
 
     anime_db.world_art.browser:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
-        arguments: [@buzz.browser]
+        arguments: [@buzz.browser, %browser.timeout%, %browser.proxy% ]
         calls:
             - [setRequest, ['@?request=']]
 
