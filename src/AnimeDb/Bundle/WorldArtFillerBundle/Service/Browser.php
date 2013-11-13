@@ -55,7 +55,9 @@ class Browser
         /* @var $client \Buzz\Client\Curl */
         $client = $browser->getClient();
         $client->setTimeout($timeout);
-        $client->setProxy($proxy_list[array_rand($proxy_list)]);
+        if ($proxy_list) {
+            $client->setProxy($proxy_list[array_rand($proxy_list)]);
+        }
 
         $this->browser = $browser;
     }
