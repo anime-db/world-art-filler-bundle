@@ -46,6 +46,25 @@ class Refiller extends RefillerPlugin
     const HOST = 'http://www.world-art.ru/';
 
     /**
+     * List of supported fields
+     *
+     * @var array
+     */
+    protected $supported_fields = [
+        self::FIELD_DATE_END,
+        self::FIELD_DATE_START,
+        self::FIELD_DURATION,
+        self::FIELD_EPISODES,
+        self::FIELD_EPISODES_NUMBER,
+        self::FIELD_GENRES,
+//         self::FIELD_IMAGES,
+        self::FIELD_MANUFACTURER,
+        self::FIELD_NAMES,
+        self::FIELD_SOURCES,
+        self::FIELD_SUMMARY
+    ];
+
+    /**
      * Filler
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler
@@ -99,6 +118,9 @@ class Refiller extends RefillerPlugin
      */
     public function isCanRefill(Item $item, $field)
     {
+        if (!in_array($field, $this->supported_fields)) {
+            return false;
+        }
         /* @var $source \AnimeDb\Bundle\CatalogBundle\Entity\Source */
         foreach ($item->getSources() as $source) {
             if (strpos($source->getUrl(), self::HOST) === 0) {
@@ -143,6 +165,9 @@ class Refiller extends RefillerPlugin
      */
     public function isCanSearch(Item $item, $field)
     {
+        if (!in_array($field, $this->supported_fields)) {
+            return false;
+        }
         if ($this->isCanRefill($item, $field) || $item->getName()) {
             return true;
         }
