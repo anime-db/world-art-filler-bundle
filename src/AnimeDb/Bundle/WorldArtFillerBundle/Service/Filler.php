@@ -471,19 +471,8 @@ class Filler extends FillerPlugin
                     default:
                         // get frames
                         if (strpos($value, 'кадры из аниме') !== false && $id && $frames) {
-                            $dom = $this->browser->getDom(self::HOST.'animation/animation_photos.php?id='.$id);
-                            $images = (new \DOMXPath($dom))->query('//table//table//table//img');
-                            foreach ($images as $image) {
-                                $src = $this->getAttrAsArray($image)['src'];
-                                $src = str_replace('optimize_b', 'optimize_d', $src);
-                                if (strpos($src, 'http://') === false) {
-                                    $src = self::HOST.'animation/'.$src;
-                                }
-                                if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
-                                    $src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])
-                                ) {
-                                    $item->addImage((new Image())->setSource($src));
-                                }
+                            foreach ($this->getFrames($id) as $frame) {
+                                $item->addImage((new Image())->setSource($frame));
                             }
                         }
                 }
@@ -499,7 +488,7 @@ class Filler extends FillerPlugin
      *
      * @return string
      */
-    private function uploadImage($url, $target = null) {
+    public function uploadImage($url, $target = null) {
         $image = new ImageField();
         $image->setRemote($url);
         $image->upload($this->validator, $target);
@@ -566,5 +555,35 @@ class Filler extends FillerPlugin
                 ->find($this->types[$name]);
         }
         return null;
+    }
+
+    /**
+     * Get item frames
+     *
+     * @param integer $id
+     *
+     * @return array
+     */
+    public function getFrames($id)
+    {
+        $dom = $this->browser->getDom(self::HOST.'animation/animation_photos.php?id='.$id);
+        if (!$dom) {
+            return [];
+        }
+        $images = (new \DOMXPath($dom))->query('//table//table//table//img');
+        $frames = [];
+        foreach ($images as $image) {
+            $src = $this->getAttrAsArray($image)['src'];
+            $src = str_replace('optimize_b', 'optimize_d', $src);
+            if (strpos($src, 'http://') === false) {
+                $src = self::HOST.'animation/'.$src;
+            }
+            if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
+                $src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])
+            ) {
+                $frames[] = $src;
+            }
+        }
+        return $frames;
     }
 }

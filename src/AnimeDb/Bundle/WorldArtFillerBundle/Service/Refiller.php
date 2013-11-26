@@ -14,6 +14,7 @@ use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Refiller\Refiller as RefillerPlugin
 use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Refiller\Item as ItemRefiller;
 use AnimeDb\Bundle\CatalogBundle\Entity\Item;
 use AnimeDb\Bundle\CatalogBundle\Entity\Source;
+use AnimeDb\Bundle\CatalogBundle\Entity\Image;
 
 /**
  * Refiller from site world-art.ru
@@ -57,7 +58,7 @@ class Refiller extends RefillerPlugin
         self::FIELD_EPISODES,
         self::FIELD_EPISODES_NUMBER,
         self::FIELD_GENRES,
-//         self::FIELD_IMAGES,
+        self::FIELD_IMAGES,
         self::FIELD_MANUFACTURER,
         self::FIELD_NAMES,
         self::FIELD_SOURCES,
@@ -148,8 +149,17 @@ class Refiller extends RefillerPlugin
                 break;
             }
         }
+        if (!$url) {
+            return $item;
+        }
 
-        if ($url && ($new_item = $this->filler->fill(['url' => $url, 'frames' => false]))) {
+        if ($field == self::FIELD_IMAGES) {
+            if (preg_match('/id=(?<id>\d+)/', $url, $mat)) {
+                foreach ($this->filler->getFrames($mat['id']) as $frame) {
+                    $item->addImage((new Image())->setSource($frame));
+                }
+            }
+        } elseif ($new_item = $this->filler->fill(['url' => $url, 'frames' => false])) {
             $item = $this->fillItem($item, $new_item, $field);
         }
         return $item;
