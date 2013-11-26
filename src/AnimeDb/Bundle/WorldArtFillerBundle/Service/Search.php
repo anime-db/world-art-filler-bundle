@@ -10,8 +10,8 @@
 
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDb\Bundle\CatalogBundle\Plugin\Search\Search as SearchPlugin;
-use AnimeDb\Bundle\CatalogBundle\Plugin\Search\Item as ItemSearch;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Search as SearchPlugin;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Item as ItemSearch;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -105,7 +105,7 @@ class Search extends SearchPlugin
      * Return structure
      * <code>
      * [
-     *     \AnimeDb\Bundle\CatalogBundle\Plugin\Search\Item
+     *     \AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Item
      * ]
      * </code>
      *
