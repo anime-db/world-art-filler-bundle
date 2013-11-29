@@ -21,7 +21,7 @@ use AnimeDb\Bundle\CatalogBundle\Entity\Type;
 use AnimeDb\Bundle\CatalogBundle\Entity\Image;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Filesystem\Filesystem;
-use AnimeDb\Bundle\CatalogBundle\Entity\Field\Image as ImageField;
+use AnimeDb\Bundle\AppBundle\Entity\Field\Image as ImageField;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
