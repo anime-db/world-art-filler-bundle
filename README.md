@@ -3,3 +3,5 @@
 <img src="http://www.php.net/images/logos/php5-power-micro.png" />
 
 # World-Art.ru #
+
+Data filler for item from site World-Art.ru
