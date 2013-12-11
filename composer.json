@@ -4,7 +4,6 @@
     "type": "anime-db-plugin",
     "description": "Plugin World-Art for the catalog Anime DB",
     "homepage": "http://github.com/anime-db/world-art-filler-bundle",
-    "version": "0.1.5",
     "autoload": {
         "psr-0": { "AnimeDb\\Bundle\\WorldArtFillerBundle": "src/" }
     },
@@ -12,7 +11,7 @@
         "php": ">=5.4.0",
         "ext-tidy": ">=2.0",
         "sensio/buzz-bundle": "1.0.*",
-        "anime-db/anime-db": "0.2.*"
+        "anime-db/catalog-bundle": "dev-develop"
     },
     "minimum-stability": "dev"
 }
