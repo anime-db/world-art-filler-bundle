@@ -47,8 +47,18 @@ class Browser
      * Construct
      *
      * @param \Buzz\Browser $browser
+     * @param integer $timeout
+     * @param array $proxy_list
      */
-    public function __construct(BrowserBuzz $browser) {
+    public function __construct(BrowserBuzz $browser, $timeout, array $proxy_list) {
+        // configure browser client
+        /* @var $client \Buzz\Client\Curl */
+        $client = $browser->getClient();
+        $client->setTimeout($timeout);
+        if ($proxy_list) {
+            $client->setProxy($proxy_list[array_rand($proxy_list)]);
+        }
+
         $this->browser = $browser;
     }
 
@@ -95,6 +105,7 @@ class Browser
         if ($this->request) {
             $headers['User-Agent'] = $this->request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT);
         }
+
         /* @var $response \Buzz\Message\Response */
         $response = $this->browser->get($url, $headers);
         if ($response->getStatusCode() !== 200 || !($html = $response->getContent())) {

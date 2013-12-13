@@ -1,0 +1,3 @@
+parameters:
+    browser.timeout: 10
+    browser.proxy: []
