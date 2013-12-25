@@ -59,7 +59,7 @@ class Refiller extends RefillerPlugin
         self::FIELD_EPISODES_NUMBER,
         self::FIELD_GENRES,
         self::FIELD_IMAGES,
-        self::FIELD_MANUFACTURER,
+        self::FIELD_COUNTRY,
         self::FIELD_NAMES,
         self::FIELD_SOURCES,
         self::FIELD_SUMMARY
