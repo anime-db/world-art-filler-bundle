@@ -343,14 +343,14 @@ class Filler extends FillerPlugin
         for ($i = 0; $i < $length; $i++) {
             if ($data->childNodes->item($i)->nodeName == 'b') {
                 switch ($data->childNodes->item($i)->nodeValue) {
-                    // set manufacturer
+                    // set country
                     case 'Производство':
                         $j = 1;
                         do {
                             if ($data->childNodes->item($i+$j)->nodeName == 'img') {
                                 $country_name = trim($data->childNodes->item($i+$j+1)->nodeValue);
                                 if ($country_name && $country = $this->getCountryByName($country_name)) {
-                                    $item->setManufacturer($country);
+                                    $item->setCountry($country);
                                 }
                                 break;
                             }
