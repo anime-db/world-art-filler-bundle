@@ -322,23 +322,23 @@ class Filler extends FillerPlugin
      */
     private function fillHeadData(Item $item, \DOMXPath $xpath, \DOMElement $head) {
         // add main name
-        $name = $xpath->query('font[1]/b', $head)->item(0)->nodeValue;
+        $names = $xpath->query('table[1]', $head)->item(0)->nodeValue;
+        $names = explode("\n", trim($names));
+
         // clear
-        $name = preg_replace('/\[?(ТВ|OVA|ONA)(\-\d)?\]?/', '', $name); // example: [TV-1]
+        $name = preg_replace('/\[?(ТВ|OVA|ONA)(\-\d)?\]?/', '', array_shift($names)); // example: [TV-1]
         $name = preg_replace('/\(фильм \w+\)/u', '', $name); // example: (фильм седьмой)
         $name = trim($name, " [\r\n\t"); // clear trash
         $item->setName($name);
 
-        // find other names
-        foreach ($head->childNodes as $node) {
-            if ($node->nodeName == '#text' && trim($node->nodeValue)) {
-                $name = trim(preg_replace('/(\(\d+\))?/', '', $node->nodeValue));
-                $item->addName((new Name())->setName($name));
-            }
+        // add other names
+        foreach ($names as $name) {
+            $name = trim(preg_replace('/(\(\d+\))?/', '', $name));
+            $item->addName((new Name())->setName($name));
         }
 
         /* @var $data \DOMElement */
-        $data = $xpath->query('font[2]', $head)->item(0);
+        $data = $xpath->query('font', $head)->item(0);
         $length = $data->childNodes->length;
         for ($i = 0; $i < $length; $i++) {
             if ($data->childNodes->item($i)->nodeName == 'b') {
