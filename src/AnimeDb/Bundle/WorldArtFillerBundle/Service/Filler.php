@@ -326,10 +326,10 @@ class Filler extends FillerPlugin
         $names = explode("\n", trim($names));
 
         // clear
-        $name = preg_replace('/\[?(ТВ|OVA|ONA)(\-\d)?\]?/', '', array_shift($names)); // example: [TV-1]
+        $name = preg_replace('/\[\d{4}\]/', '', array_shift($names)); // example: [2011]
+        $name = preg_replace('/\[?(ТВ|OVA|ONA)(\-\d)?\]?/', '', $name); // example: [TV-1]
         $name = preg_replace('/\(фильм \w+\)/u', '', $name); // example: (фильм седьмой)
-        $name = trim($name, " [\r\n\t"); // clear trash
-        $item->setName($name);
+        $item->setName(trim($name));
 
         // add other names
         foreach ($names as $name) {
