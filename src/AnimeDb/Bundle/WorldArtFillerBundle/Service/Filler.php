@@ -322,23 +322,23 @@ class Filler extends FillerPlugin
      */
     private function fillHeadData(Item $item, \DOMXPath $xpath, \DOMElement $head) {
         // add main name
-        $name = $xpath->query('font[1]/b', $head)->item(0)->nodeValue;
+        $names = $xpath->query('table[1]', $head)->item(0)->nodeValue;
+        $names = explode("\n", trim($names));
+
         // clear
-        $name = preg_replace('/\[?(ТВ|OVA|ONA)(\-\d)?\]?/', '', $name); // example: [TV-1]
+        $name = preg_replace('/\[?(ТВ|OVA|ONA)(\-\d)?\]?/', '', array_shift($names)); // example: [TV-1]
         $name = preg_replace('/\(фильм \w+\)/u', '', $name); // example: (фильм седьмой)
         $name = trim($name, " [\r\n\t"); // clear trash
         $item->setName($name);
 
-        // find other names
-        foreach ($head->childNodes as $node) {
-            if ($node->nodeName == '#text' && trim($node->nodeValue)) {
-                $name = trim(preg_replace('/(\(\d+\))?/', '', $node->nodeValue));
-                $item->addName((new Name())->setName($name));
-            }
+        // add other names
+        foreach ($names as $name) {
+            $name = trim(preg_replace('/(\(\d+\))?/', '', $name));
+            $item->addName((new Name())->setName($name));
         }
 
         /* @var $data \DOMElement */
-        $data = $xpath->query('font[2]', $head)->item(0);
+        $data = $xpath->query('font', $head)->item(0);
         $length = $data->childNodes->length;
         for ($i = 0; $i < $length; $i++) {
             if ($data->childNodes->item($i)->nodeName == 'b') {
@@ -444,14 +444,14 @@ class Filler extends FillerPlugin
                     case 'Краткое содержание:':
                         $summary = $xpath->query('tr/td/p[1]', $body->childNodes->item($i+2));
                         if ($summary->length) {
-                            $item->setSummary(trim($summary->item(0)->nodeValue));
+                            $item->setSummary($this->getNodeValueAsText($summary->item(0)));
                         }
                         $i += 2;
                         break;
                     // get episodes
                     case 'Эпизоды:':
                         if (!trim($body->childNodes->item($i+1)->nodeValue)) { // simple list
-                            $item->setEpisodes(trim($body->childNodes->item($i+2)->nodeValue));
+                            $item->setEpisodes($this->getNodeValueAsText($body->childNodes->item($i+2)));
                             $i += 2;
                         } else { // episodes in table
                             $rows = $xpath->query('tr/td[2]', $body->childNodes->item($i+1));
@@ -585,5 +585,19 @@ class Filler extends FillerPlugin
             }
         }
         return $frames;
+    }
+
+    /**
+     * Get node value as text
+     *
+     * @param \DOMNode $node
+     *
+     * @return string
+     */
+    private function getNodeValueAsText(\DOMNode $node)
+    {
+        $text = $node->ownerDocument->saveHTML($node);
+        $text = str_replace(["<br>\n", "\n", '<br>'], ['<br>', ' ', "\n"], $text);
+        return trim(strip_tags($text));
     }
 }
