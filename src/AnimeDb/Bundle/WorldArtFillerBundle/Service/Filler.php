@@ -444,7 +444,10 @@ class Filler extends FillerPlugin
                     case 'Краткое содержание:':
                         $summary = $xpath->query('tr/td/p[1]', $body->childNodes->item($i+2));
                         if ($summary->length) {
-                            $item->setSummary(trim($summary->item(0)->nodeValue));
+                            $summary = $body->ownerDocument->saveHTML($summary->item(0));
+                            $summary = str_replace(["<br>\n", "\n", '<br>'], ['<br>', ' ', "\n"], $summary);
+                            $summary = trim(strip_tags($summary));
+                            $item->setSummary($summary);
                         }
                         $i += 2;
                         break;
