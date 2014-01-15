@@ -444,17 +444,14 @@ class Filler extends FillerPlugin
                     case 'Краткое содержание:':
                         $summary = $xpath->query('tr/td/p[1]', $body->childNodes->item($i+2));
                         if ($summary->length) {
-                            $summary = $body->ownerDocument->saveHTML($summary->item(0));
-                            $summary = str_replace(["<br>\n", "\n", '<br>'], ['<br>', ' ', "\n"], $summary);
-                            $summary = trim(strip_tags($summary));
-                            $item->setSummary($summary);
+                            $item->setSummary($this->getNodeValueAsText($summary->item(0)));
                         }
                         $i += 2;
                         break;
                     // get episodes
                     case 'Эпизоды:':
                         if (!trim($body->childNodes->item($i+1)->nodeValue)) { // simple list
-                            $item->setEpisodes(trim($body->childNodes->item($i+2)->nodeValue));
+                            $item->setEpisodes($this->getNodeValueAsText($body->childNodes->item($i+2)));
                             $i += 2;
                         } else { // episodes in table
                             $rows = $xpath->query('tr/td[2]', $body->childNodes->item($i+1));
@@ -588,5 +585,19 @@ class Filler extends FillerPlugin
             }
         }
         return $frames;
+    }
+
+    /**
+     * Get node value as text
+     *
+     * @param \DOMNode $node
+     *
+     * @return string
+     */
+    private function getNodeValueAsText(\DOMNode $node)
+    {
+        $text = $node->ownerDocument->saveHTML($node);
+        $text = str_replace(["<br>\n", "\n", '<br>'], ['<br>', ' ', "\n"], $text);
+        return trim(strip_tags($text));
     }
 }
