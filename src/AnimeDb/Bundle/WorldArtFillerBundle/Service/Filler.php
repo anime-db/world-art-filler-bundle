@@ -400,7 +400,7 @@ class Filler extends FillerPlugin
                         }
                         $i++;
                         break;
-                    // set date start and date end if exists
+                    // set date premiere and date end if exists
                     case 'Премьера':
                     case 'Выпуск':
                         $j = 1;
@@ -414,7 +414,7 @@ class Filler extends FillerPlugin
                         $reg = '/(?<start>(?:(?:\d{2})|(?:\?\?)).\d{2}.\d{4})'.
                             '(?:.*(?<end>(?:(?:\d{2})|(?:\?\?)).\d{2}.\d{4}))?/';
                         if (preg_match($reg, $date, $match)) {
-                            $item->setDateStart(new \DateTime(str_replace('??', '01', $match['start'])));
+                            $item->setDatePremiere(new \DateTime(str_replace('??', '01', $match['start'])));
                             if (isset($match['end'])) {
                                 $item->setDateEnd(new \DateTime($match['end']));
                             }

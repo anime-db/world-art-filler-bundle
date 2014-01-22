@@ -53,7 +53,7 @@ class Refiller extends RefillerPlugin
      */
     protected $supported_fields = [
         self::FIELD_DATE_END,
-        self::FIELD_DATE_START,
+        self::FIELD_DATE_PREMIERE,
         self::FIELD_DURATION,
         self::FIELD_EPISODES,
         self::FIELD_EPISODES_NUMBER,
