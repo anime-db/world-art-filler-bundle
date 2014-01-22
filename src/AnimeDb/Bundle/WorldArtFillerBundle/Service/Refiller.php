@@ -158,7 +158,6 @@ class Refiller extends RefillerPlugin
                 foreach ($this->filler->getFrames($mat['id']) as $frame) {
                     $item->addImage((new Image())->setSource($frame));
                 }
-            }
         } elseif ($new_item = $this->filler->fill(['url' => $url, 'frames' => false])) {
             $item = $this->fillItem($item, $new_item, $field);
         }
@@ -272,11 +271,26 @@ class Refiller extends RefillerPlugin
     protected function fillItem(Item $item, Item $new_item, $field)
     {
         switch ($field) {
-            case self::FIELD_SUMMARY:
-                $item->setSummary($new_item->getSummary());
+            case self::FIELD_COUNTRY:
+                $item->setCountry($new_item->getCountry());
+                break;
+            case self::FIELD_DATE_END:
+                $item->setDateEnd($new_item->getDateEnd());
+                break;
+            case self::FIELD_DATE_PREMIERE:
+                $item->setDatePremiere($new_item->getDatePremiere());
+                break;
+            case self::FIELD_DURATION:
+                $item->setDuration($new_item->getDuration());
                 break;
             case self::FIELD_EPISODES:
                 $item->setEpisodes($new_item->getEpisodes());
+                break;
+            case self::FIELD_EPISODES_NUMBER:
+                $item->setEpisodesNumber($new_item->getEpisodesNumber());
+                break;
+            case self::FIELD_FILE_INFO:
+                $item->setFileInfo($new_item->getFileInfo());
                 break;
             case self::FIELD_GENRES:
                 /* @var $new_genre \AnimeDb\Bundle\CatalogBundle\Entity\Genre */
@@ -303,6 +317,22 @@ class Refiller extends RefillerPlugin
                     }
                     $item->addName($new_name);
                 }
+                break;
+            case self::FIELD_SOURCES:
+                /* @var $new_source \AnimeDb\Bundle\CatalogBundle\Entity\Source */
+                foreach ($new_item->getSources() as $new_source) {
+                    // check of the existence of the source
+                    /* @var $source \AnimeDb\Bundle\CatalogBundle\Entity\Source */
+                    foreach ($item->getSources() as $source) {
+                        if ($new_source->getUrl() == $name->getUrl()) {
+                            continue 2;
+                        }
+                    }
+                    $item->addSource($new_source);
+                }
+                break;
+            case self::FIELD_SUMMARY:
+                $item->setSummary($new_item->getSummary());
                 break;
         }
         return $item;
