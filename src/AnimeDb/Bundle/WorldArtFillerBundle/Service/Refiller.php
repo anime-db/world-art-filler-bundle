@@ -156,8 +156,16 @@ class Refiller extends RefillerPlugin
         if ($field == self::FIELD_IMAGES) {
             if (preg_match('/id=(?<id>\d+)/', $url, $mat)) {
                 foreach ($this->filler->getFrames($mat['id']) as $frame) {
+                    // check of the existence of the image
+                    /* @var $image \AnimeDb\Bundle\CatalogBundle\Entity\Image */
+                    foreach ($item->getImages() as $image) {
+                        if ($frame == $image->getSource()) {
+                            continue 2;
+                        }
+                    }
                     $item->addImage((new Image())->setSource($frame));
                 }
+            }
         } elseif ($new_item = $this->filler->fill(['url' => $url, 'frames' => false])) {
             $item = $this->fillItem($item, $new_item, $field);
         }
