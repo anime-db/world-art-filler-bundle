@@ -175,6 +175,137 @@ class Filler extends FillerPlugin
     ];
 
     /**
+     * World-Art studios
+     *
+     * @var array
+     */
+    private $studios = [
+        1 => 'Studio Ghibli',
+        3 => 'Gainax',
+        4 => 'AIC',
+        14 => 'TMS Entertainment',
+        20 => 'Bones',
+        22 => 'Studio DEEN',
+        24 => 'J.C.Staff',
+        25 => 'Madhouse',
+        29 => 'OLM, Inc.',
+        30 => 'Tezuka Productions',
+        31 => 'Production I.G',
+        32 => 'Gonzo',
+        34 => 'Sunrise',
+        41 => 'Toei Animation',
+        44 => 'APPP',
+        56 => 'Pierrot',
+        59 => 'Xebec',
+        64 => 'Satelight',
+        74 => 'Oh! Production',
+        82 => 'Bee Train',
+        84 => 'Animax Entertainment',
+        87 => 'Daume',
+        87 => 'Ajia-do',
+        96 => 'Studio 4°C',
+        116 => 'Fox Animation Studios',
+        117 => 'Blue Sky Studios',
+        118 => 'Pacific Data Images',
+        120 => 'Pixar',
+        152 => 'Mushi Production',
+        154 => 'Aardman Animations',
+        159 => 'DR Movie',
+        171 => 'Tatsunoko Productions',
+        178 => 'Paramount Animation',
+        198 => 'Studio Fantasia',
+        210 => 'Arms Corporation',
+        244 => 'Production Reed',
+        // reverse links
+        250 => 'Melnitsa Animation Studio',
+        252 => 'Nippon Animation',
+        255 => 'Artland',
+        267 => 'Shaft',
+        278 => 'March Entertainment',
+        296 => 'Gallop',
+        315 => 'DreamWorks Animation',
+        351 => 'TNK',
+        398 => 'A.C.G.T',
+        436 => 'Kyoto Animation',
+        439 => 'Studio Comet',
+        463 => 'Magic Bus',
+        639 => 'Industrial Light & Magic',
+        689 => 'Zexcs',
+        724 => 'Six Point Harness',
+        753 => 'Pentamedia Graphics',
+        795 => 'Rough Draft Studios',
+        802 => 'Shin-Ei Animation',
+        821 => 'Warner Bros. Animation',
+        1066 => 'Animal Logic',
+        1161 => 'Marvel Animation Studios',
+        1168 => 'Klasky Csupo',
+        1654 => 'Digital Frontier',
+        1663 => 'Mac Guff',
+        1689 => 'Manglobe',
+        1778 => 'CinéGroupe',
+        1889 => 'Film Roman, Inc.',
+        1890 => 'AKOM',
+        1901 => 'Brain\'s Base',
+        1961 => 'Feel',
+        2058 => 'Eiken',
+        2229 => 'Studio Hibari',
+        2370 => 'Imagin',
+        2379 => 'Folimage',
+        2381 => 'DisneyToon Studios',
+        2491 => 'Ufotable',
+        3058 => 'Asahi Production',
+        3096 => 'Mook Animation',
+        3113 => 'Walt Disney Television Animation',
+        3420 => 'Metro-Goldwyn-Mayer Animation',
+        3530 => 'Seven Arcs',
+        3742 => 'Nomad',
+        3748 => 'Dygra Films',
+        3773 => 'Dogakobo',
+        3816 => 'EMation',
+        4013 => 'Toon City',
+        5423 => 'O Entertainment/Omation Animation Studio',
+        6081 => 'Sony Pictures Animation',
+        6474 => 'Wang Film Productions',
+        6475 => 'Creative Capers Entertainment',
+        6701 => 'Arc Productions',
+        7092 => 'Millimages',
+        7194 => 'Mondo TV',
+        7298 => 'A-1 Pictures',
+        7372 => 'Diomedea',
+        7388 => 'Williams Street Studios',
+        7801 => 'National Film Board of Canada',
+        7933 => 'Titmouse',
+        8590 => 'Rhythm and Hues Studios',
+        8639 => 'Bagdasarian Productions',
+        9298 => 'Toonz',
+        9900 => 'Savage Studios Ltd.',
+        10664 => 'A. Film',
+        11077 => 'Vanguard Animation',
+        11213 => 'bolexbrothers',
+        11827 => 'Zinkia Entertainment',
+        12209 => 'P.A. Works',
+        12268 => 'Universal Animation Studios',
+        12280 => 'Reel FX',
+        12281 => 'Walt Disney Animation Studios',
+        12299 => 'LAIKA',
+        12825 => 'White Fox',
+        13269 => 'David Production',
+        13301 => 'Silver Link',
+        13329 => 'Kinema Citrus',
+        13906 => 'GoHands',
+        13957 => 'Khara',
+        14617 => 'Ordet',
+        15102 => 'TYO Animations',
+        15334 => 'Dong Woo Animation',
+        16112 => 'Studio Gokumi',
+        16433 => 'Nickelodeon Animation Studios',
+        16961 => 'Renegade Animation',
+        17049 => 'Curious Pictures',
+        17235 => 'Trigger',
+        17322 => 'Wit Studio',
+    ];
+
+    /**
      * Construct
      *
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
@@ -268,6 +399,11 @@ class Filler extends FillerPlugin
 
         // add cover
         $item->setCover($this->getCover($id));
+
+        // fill item studio
+        if ($studio = $this->getStudio($xpath, $body)) {
+            $item->setStudio($studio);
+        }
 
         // fill main data
         $head = $xpath->query('table[3]/tr[2]/td[3]', $body);
@@ -599,5 +735,28 @@ class Filler extends FillerPlugin
         $text = $node->ownerDocument->saveHTML($node);
         $text = str_replace(["<br>\n", "\n", '<br>'], ['<br>', ' ', "\n"], $text);
         return trim(strip_tags($text));
+    }
+
+    /**
+     * Get item studio
+     *
+     * @param \DOMXPath $xpath
+     * @param \DOMNode $body
+     *
+     * @return \AnimeDb\Bundle\CatalogBundle\Entity\Studio|null
+     */
+    private function getStudio(\DOMXPath $xpath, \DOMNode $body)
+    {
+        $studios = $xpath->query('//img[starts-with(@src,"../image_link.php?public_sector=company&id=41")]', $body);
+        if ($studios->length) {
+            foreach ($studios as $studio) {
+                $url = $studio->attributes->getNamedItem('src')->nodeValue;
+                if (preg_match('/&id=(\d+)/', $url, $mat) && isset($this->studios[$mat[1]])) {
+                    return $this->doctrine
+                        ->getRepository('AnimeDbCatalogBundle:Studio')
+                        ->findOneByName($this->studios[$mat[1]]);
+                }
+            }
+        }
     }
 }
