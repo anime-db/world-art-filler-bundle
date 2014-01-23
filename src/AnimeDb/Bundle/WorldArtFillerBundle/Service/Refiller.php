@@ -61,6 +61,7 @@ class Refiller extends RefillerPlugin
         self::FIELD_IMAGES,
         self::FIELD_COUNTRY,
         self::FIELD_NAMES,
+        self::FIELD_STUDIO,
         self::FIELD_SOURCES,
         self::FIELD_SUMMARY
     ];
@@ -338,6 +339,9 @@ class Refiller extends RefillerPlugin
                     }
                     $item->addSource($new_source);
                 }
+                break;
+            case self::FIELD_STUDIO:
+                $item->setStudio($new_item->getStudio());
                 break;
             case self::FIELD_SUMMARY:
                 $item->setSummary($new_item->getSummary());
