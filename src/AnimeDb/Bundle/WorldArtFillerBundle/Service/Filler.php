@@ -71,11 +71,18 @@ class Filler extends FillerPlugin
     const XPATH_FOR_FILL = '//center/table[@height="58%"]/tr/td/table[1]/tr/td';
 
     /**
-     * Default HTTP User-Agent
+     * Item type animation
      *
      * @var string
      */
-    const DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36';
+    const ITEM_TYPE_ANIMATION = 'animation';
+
+    /**
+     * Item type cinema
+     *
+     * @var string
+     */
+    const ITEM_TYPE_CINEMA = 'cinema';
 
     /**
      * Browser
@@ -322,16 +329,18 @@ class Filler extends FillerPlugin
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
      * @param \Symfony\Component\Validator\Validator $validator
+     * @param \Symfony\Component\Filesystem\Filesystem $fs
      */
     public function __construct(
         Browser $browser,
         Registry $doctrine,
-        Validator $validator
+        Validator $validator,
+        Filesystem $fs
     ) {
         $this->browser  = $browser;
         $this->doctrine = $doctrine;
         $this->validator = $validator;
-        $this->fs = new Filesystem();
+        $this->fs = $fs;
     }
 
     /**
@@ -382,6 +391,9 @@ class Filler extends FillerPlugin
         $xpath = new \DOMXPath($dom);
         $nodes = $xpath->query(self::XPATH_FOR_FILL);
 
+        // get item type
+        $type = $this->getItemType($data['url']);
+
         /* @var $body \DOMElement */
         if (!($body = $nodes->item(4))) {
             throw new \LogicException('Incorrect data structure at source');
@@ -409,7 +421,7 @@ class Filler extends FillerPlugin
         }
 
         // add cover
-        $item->setCover($this->getCover($id));
+        $item->setCover($this->getCover($id, $type));
 
         // fill item studio
         if ($studio = $this->getStudio($xpath, $body)) {
@@ -424,7 +436,7 @@ class Filler extends FillerPlugin
         $this->fillHeadData($item, $xpath, $head->item(0));
 
         // fill body data
-        $this->fillBodyData($item, $xpath, $body, $id, $data['frames']);
+        $this->fillBodyData($item, $xpath, $body, $id, $data['frames'], $type);
         return $item;
     }
 
@@ -447,14 +459,23 @@ class Filler extends FillerPlugin
      * Get cover from source id
      *
      * @param string $id
+     * @param string $type
      *
      * @return string|null
      */
-    private function getCover($id) {
-        $cover = self::HOST.'animation/img/'.(ceil($id/1000)*1000).'/'.$id.'/1.jpg';
+    private function getCover($id, $type) {
+        switch ($type) {
+            case self::ITEM_TYPE_ANIMATION:
+                $cover = self::HOST.$type.'/img/'.(ceil($id/1000)*1000).'/'.$id.'/1.jpg';
+                break;
+            default:
+                $cover = self::HOST.$type.'/img/'.(ceil($id/10000)*10000).'/'.$id.'/1.jpg';
+        }
+
         try {
             return $this->uploadImage($cover, $id.'/1.jpg');
         } catch (\Exception $e) {}
+
         return null;
     }
 
@@ -580,10 +601,11 @@ class Filler extends FillerPlugin
      * @param \DOMElement $body
      * @param integer $id
      * @param boolean $frames
+     * @param string $type
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
-    private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames) {
+    private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames, $type) {
         for ($i = 0; $i < $body->childNodes->length; $i++) {
             if ($value = trim($body->childNodes->item($i)->nodeValue)) {
                 switch ($value) {
@@ -618,7 +640,7 @@ class Filler extends FillerPlugin
                     default:
                         // get frames
                         if (strpos($value, 'кадры из аниме') !== false && $id && $frames) {
-                            foreach ($this->getFrames($id) as $frame) {
+                            foreach ($this->getFrames($id, $type) as $frame) {
                                 $item->addImage((new Image())->setSource($frame));
                             }
                         }
@@ -708,10 +730,11 @@ class Filler extends FillerPlugin
      * Get item frames
      *
      * @param integer $id
+     * @param string $type
      *
      * @return array
      */
-    public function getFrames($id)
+    public function getFrames($id, $type)
     {
         $dom = $this->browser->getDom(self::HOST.'animation/animation_photos.php?id='.$id);
         if (!$dom) {
@@ -723,7 +746,7 @@ class Filler extends FillerPlugin
             $src = $this->getAttrAsArray($image)['src'];
             $src = str_replace('optimize_b', 'optimize_d', $src);
             if (strpos($src, 'http://') === false) {
-                $src = self::HOST.'animation/'.$src;
+                $src = self::HOST.$type.'/'.$src;
             }
             if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
                 $src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])
@@ -787,5 +810,21 @@ class Filler extends FillerPlugin
                 $this->getForm()->getName() => ['url' => $data, 'frames' => 0]
             ]
         );
+    }
+
+    /**
+     * Get item type by URL
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    protected function getItemType($url)
+    {
+        if (strpos($url, self::ITEM_TYPE_ANIMATION)) {
+            return self::ITEM_TYPE_ANIMATION;
+        } else {
+            return self::ITEM_TYPE_CINEMA;
+        }
     }
 }
