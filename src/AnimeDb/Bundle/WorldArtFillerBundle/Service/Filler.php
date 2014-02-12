@@ -591,6 +591,13 @@ class Filler extends FillerPlugin
                             $item->setDuration((int)$match['duration']);
                         }
                         break;
+                    case 'Кол-во серий':
+                        $number = trim($data->childNodes->item($i+1)->nodeValue, ' :');
+                        if (strpos($number, '>') !== false) {
+                            $number = str_replace('>', '', $number).'+';
+                        }
+                        $item->setEpisodesNumber($number);
+                        break;
                 }
             }
         }
