@@ -121,9 +121,10 @@ class Browser
             'fix-backslash' => true,
             'hide-comments' => true,
             'drop-empty-paras' => true,
+            'wrap' => false
         ];
         $tidy = new \tidy();
-        $tidy->ParseString($html, $config, 'utf8');
+        $tidy->parseString($html, $config, 'utf8');
         $tidy->cleanRepair();
         $html = $tidy->root()->value;
         // ignore blocks
