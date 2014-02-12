@@ -758,11 +758,11 @@ class Filler extends FillerPlugin
      */
     private function getStudio(\DOMXPath $xpath, \DOMNode $body)
     {
-        $studios = $xpath->query('//img[starts-with(@src,"../image_link.php?public_sector=company&id=41")]', $body);
+        $studios = $xpath->query('//img[starts-with(@src,"http://www.world-art.ru/img/company_new/")]', $body);
         if ($studios->length) {
             foreach ($studios as $studio) {
                 $url = $studio->attributes->getNamedItem('src')->nodeValue;
-                if (preg_match('/&id=(\d+)/', $url, $mat) && isset($this->studios[$mat[1]])) {
+                if (preg_match('/\/(\d+)\./', $url, $mat) && isset($this->studios[$mat[1]])) {
                     return $this->doctrine
                         ->getRepository('AnimeDbCatalogBundle:Studio')
                         ->findOneByName($this->studios[$mat[1]]);
