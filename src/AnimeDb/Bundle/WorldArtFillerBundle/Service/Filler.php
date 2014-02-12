@@ -540,13 +540,15 @@ class Filler extends FillerPlugin
                     // set type and add file info
                     case 'Тип':
                         $type = $data->childNodes->item($i+1)->nodeValue;
-                        if (preg_match('/(?<type>[\w\s]+)(?: \((?:(?<episodes_number>>?\d+) эп.)?(?<file_info>.*)\))?, (?<duration>\d{1,3}) мин\.$/u', $type, $match)) {
+                        if (preg_match('/(?<type>[\w\s]+)(?: \((?:(?<episodes_number>>?\d+) эп.)?(?<file_info>.*)\))?(, (?<duration>\d{1,3}) мин\.)?$/u', $type, $match)) {
                             // add type
                             if ($type = $this->getTypeByName(trim($match['type']))) {
                                 $item->setType($type);
                             }
                             // add duration
-                            $item->setDuration((int)$match['duration']);
+                            if (!empty($match['duration'])) {
+                                $item->setDuration((int)$match['duration']);
+                            }
                             // add number of episodes
                             if (!empty($match['episodes_number'])) {
                                 if ($match['episodes_number'][0] == '>') {
