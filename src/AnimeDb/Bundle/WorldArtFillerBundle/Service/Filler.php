@@ -436,7 +436,7 @@ class Filler extends FillerPlugin
         $this->fillHeadData($item, $xpath, $head->item(0));
 
         // fill body data
-        $this->fillBodyData($item, $xpath, $body, $id, $data['frames']);
+        $this->fillBodyData($item, $xpath, $body, $id, $data['frames'], $type);
         return $item;
     }
 
@@ -601,10 +601,11 @@ class Filler extends FillerPlugin
      * @param \DOMElement $body
      * @param integer $id
      * @param boolean $frames
+     * @param string $type
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
-    private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames) {
+    private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames, $type) {
         for ($i = 0; $i < $body->childNodes->length; $i++) {
             if ($value = trim($body->childNodes->item($i)->nodeValue)) {
                 switch ($value) {
@@ -639,7 +640,7 @@ class Filler extends FillerPlugin
                     default:
                         // get frames
                         if (strpos($value, 'кадры из аниме') !== false && $id && $frames) {
-                            foreach ($this->getFrames($id) as $frame) {
+                            foreach ($this->getFrames($id, $type) as $frame) {
                                 $item->addImage((new Image())->setSource($frame));
                             }
                         }
@@ -729,10 +730,11 @@ class Filler extends FillerPlugin
      * Get item frames
      *
      * @param integer $id
+     * @param string $type
      *
      * @return array
      */
-    public function getFrames($id)
+    public function getFrames($id, $type)
     {
         $dom = $this->browser->getDom(self::HOST.'animation/animation_photos.php?id='.$id);
         if (!$dom) {
@@ -744,7 +746,7 @@ class Filler extends FillerPlugin
             $src = $this->getAttrAsArray($image)['src'];
             $src = str_replace('optimize_b', 'optimize_d', $src);
             if (strpos($src, 'http://') === false) {
-                $src = self::HOST.'animation/'.$src;
+                $src = self::HOST.$type.'/'.$src;
             }
             if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
                 $src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])
