@@ -770,4 +770,22 @@ class Filler extends FillerPlugin
             }
         }
     }
+
+    /**
+     * Get link for fill item
+     *
+     * @param mixed $data
+     *
+     * @return string
+     */
+    public function getLinkForFill($data)
+    {
+        return $this->router->generate(
+            'fill_filler',
+            [
+                'plugin' => $this->getName(),
+                $this->getForm()->getName() => ['url' => $data, 'frames' => 0]
+            ]
+        );
+    }
 }
