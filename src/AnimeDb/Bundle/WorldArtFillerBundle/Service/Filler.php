@@ -586,6 +586,11 @@ class Filler extends FillerPlugin
                             }
                         }
                         break;
+                    case 'Хронометраж':
+                        if (preg_match('/(?<duration>\d+)/', $data->childNodes->item($i+1)->nodeValue, $match)) {
+                            $item->setDuration((int)$match['duration']);
+                        }
+                        break;
                 }
             }
         }
