@@ -685,7 +685,6 @@ class Filler extends FillerPlugin
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Country|null
      */
     private function getCountryByName($name) {
-        $name = str_replace('Южная Корея', 'Республика Корея', $name);
         $rep = $this->doctrine->getRepository('AnimeDbCatalogBundle:CountryTranslation');
         if ($country = $rep->findOneBy(['locale' => 'ru', 'content' => $name])) {
             return $country->getObject();
