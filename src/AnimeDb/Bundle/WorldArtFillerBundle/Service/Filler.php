@@ -640,6 +640,23 @@ class Filler extends FillerPlugin
                             $i++;
                         }
                         break;
+                    // get date premiere
+                    case 'Даты премьер и релизов':
+                        $rows = $xpath->query('tr/td/table/tr/td[3]', $body->childNodes->item($i+1));
+                        foreach ($rows as $row) {
+                            if (preg_match('/\d{4}(?:\.\d{2}\.\d{2})?/', $row->nodeValue, $match)) {
+                                if (strlen($match[0]) == 4) {
+                                    $date = new \DateTime($match[0].'-1-1');
+                                } else {
+                                    $date = new \DateTime(str_replace('.', '-', $match[0]));
+                                }
+
+                                if (!$item->getDatePremiere() || $item->getDatePremiere() > $date) {
+                                    $item->setDatePremiere($date);
+                                }
+                            }
+                        }
+                        break;
                     default:
                         // get frames
                         if (strpos($value, 'кадры из аниме') !== false && $id && $frames) {
