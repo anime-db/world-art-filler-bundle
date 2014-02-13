@@ -49,7 +49,7 @@ class Search extends SearchPlugin
      *
      * @var string
      */
-    const SEARH_URL = 'search.php?public_search=#NAME#&global_sector=animation';
+    const SEARH_URL = 'search.php?public_search=#NAME#&global_sector=all';
 
     /**
      * XPath for list search items
@@ -57,13 +57,6 @@ class Search extends SearchPlugin
      * @var string
      */
     const XPATH_FOR_LIST = '//center/table/tr/td/table/tr/td/table/tr/td';
-
-    /**
-     * Default HTTP User-Agent
-     *
-     * @var string
-     */
-    const DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36';
 
     /**
      * Browser
@@ -130,14 +123,14 @@ class Search extends SearchPlugin
                 $url = self::HOST.substr($url, 1);
             }
             $name = iconv('cp1251', 'utf-8', $name);
-            if (!preg_match('/id=(?<id>\d+)/', $url, $mat)) {
+            if (!preg_match('/id=(?<id>\d+)/', $url, $mat) || !($type = $this->filler->getItemType($url))) {
                 throw new NotFoundHttpException('Incorrect URL for found item');
             }
             return [
                 new ItemSearch(
                     $name,
                     $this->getLinkForFill($url),
-                    self::HOST.'animation/img/'.(ceil($mat['id']/1000)*1000).'/'.$mat['id'].'/1.jpg',
+                    $this->filler->getCoverUrl($mat['id'], $type),
                     ''
                 )
             ];
@@ -152,12 +145,13 @@ class Search extends SearchPlugin
             if ($link->length &&
                 ($href = $link->item(0)->getAttribute('href')) &&
                 ($name = $link->item(0)->nodeValue) &&
-                preg_match('/id=(?<id>\d+)/', $href, $mat)
+                preg_match('/id=(?<id>\d+)/', $href, $mat) &&
+                ($type = $this->filler->getItemType($href))
             ) {
                 $list[] = new ItemSearch(
                     str_replace(["\r\n", "\n"], ' ', $name),
                     $this->getLinkForFill(self::HOST.$href),
-                    self::HOST.'animation/img/'.(ceil($mat['id']/1000)*1000).'/'.$mat['id'].'/1.jpg',
+                    $this->filler->getCoverUrl($mat['id'], $type),
                     trim(str_replace($name, '', $el->nodeValue))
                 );
             }
