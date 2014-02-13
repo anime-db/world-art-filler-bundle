@@ -119,6 +119,7 @@ class Filler extends FillerPlugin
      */
     private $genres = [
         'боевик' => 'Action',
+        'фильм действия' => 'Action',
         'боевые искусства' => 'Martial arts',
         'вампиры' => 'Vampires',
         'война' => 'War',
@@ -142,6 +143,7 @@ class Filler extends FillerPlugin
         'полиция' => 'Police',
         'постапокалиптика' => 'Apocalyptic fiction',
         'приключения' => 'Adventure',
+        'приключенческий фильм' => 'Adventure',
         'психология' => 'Psychology',
         'романтика' => 'Romance',
         'самурайский боевик' => 'Samurai action',
@@ -155,6 +157,7 @@ class Filler extends FillerPlugin
         'триллер' => 'Thriller',
         'школа' => 'School',
         'фантастика' => 'Fantastic',
+        'кинофантазия' => 'Fantastic',
         'фэнтези' => 'Fantasy',
         'эротика' => 'Erotica',
         'этти' => 'Ettie',
