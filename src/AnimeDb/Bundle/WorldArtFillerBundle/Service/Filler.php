@@ -395,7 +395,9 @@ class Filler extends FillerPlugin
         $nodes = $xpath->query(self::XPATH_FOR_FILL);
 
         // get item type
-        $type = $this->getItemType($data['url']);
+        if (!($type = $this->getItemType($data['url']))) {
+            return null;
+        }
 
         /* @var $body \DOMElement */
         if (!($body = $nodes->item(4))) {
@@ -859,12 +861,14 @@ class Filler extends FillerPlugin
      *
      * @return string
      */
-    protected function getItemType($url)
+    public function getItemType($url)
     {
-        if (strpos($url, self::ITEM_TYPE_ANIMATION)) {
+        if (strpos($url, self::ITEM_TYPE_ANIMATION.'/'.self::ITEM_TYPE_ANIMATION)) {
             return self::ITEM_TYPE_ANIMATION;
-        } else {
+        } elseif (strpos($url, self::ITEM_TYPE_CINEMA.'/'.self::ITEM_TYPE_CINEMA)) {
             return self::ITEM_TYPE_CINEMA;
+        } else {
+            return null;
         }
     }
 
