@@ -119,6 +119,7 @@ class Filler extends FillerPlugin
      */
     private $genres = [
         'боевик' => 'Action',
+        'фильм действия' => 'Action',
         'боевые искусства' => 'Martial arts',
         'вампиры' => 'Vampires',
         'война' => 'War',
@@ -142,6 +143,7 @@ class Filler extends FillerPlugin
         'полиция' => 'Police',
         'постапокалиптика' => 'Apocalyptic fiction',
         'приключения' => 'Adventure',
+        'приключенческий фильм' => 'Adventure',
         'психология' => 'Psychology',
         'романтика' => 'Romance',
         'самурайский боевик' => 'Samurai action',
@@ -155,6 +157,7 @@ class Filler extends FillerPlugin
         'триллер' => 'Thriller',
         'школа' => 'School',
         'фантастика' => 'Fantastic',
+        'кинофантазия' => 'Fantastic',
         'фэнтези' => 'Fantasy',
         'эротика' => 'Erotica',
         'этти' => 'Ettie',
@@ -392,7 +395,9 @@ class Filler extends FillerPlugin
         $nodes = $xpath->query(self::XPATH_FOR_FILL);
 
         // get item type
-        $type = $this->getItemType($data['url']);
+        if (!($type = $this->getItemType($data['url']))) {
+            return null;
+        }
 
         /* @var $body \DOMElement */
         if (!($body = $nodes->item(4))) {
@@ -429,9 +434,23 @@ class Filler extends FillerPlugin
         }
 
         // fill main data
-        $head = $xpath->query('table[3]/tr[2]/td[3]', $body);
-        if (!$head->length) {
-            $head = $xpath->query('table[2]/tr[1]/td[3]', $body);
+        if ($type == self::ITEM_TYPE_ANIMATION) {
+            $head = $xpath->query('table[3]/tr[2]/td[3]', $body);
+            if (!$head->length) {
+                $head = $xpath->query('table[2]/tr[1]/td[3]', $body);
+            }
+        } else {
+            $head = $xpath->query('table[3]/tr[1]/td[3]', $body);
+        }
+
+        if ($head->length) {
+            switch ($type) {
+                case self::ITEM_TYPE_ANIMATION:
+                    $this->fillAnimationNames($item, $xpath, $head->item(0));
+                    break;
+                default:
+                    $this->fillCinemaNames($item, $xpath, $head->item(0));
+            }
         }
         $this->fillHeadData($item, $xpath, $head->item(0));
 
@@ -464,16 +483,8 @@ class Filler extends FillerPlugin
      * @return string|null
      */
     private function getCover($id, $type) {
-        switch ($type) {
-            case self::ITEM_TYPE_ANIMATION:
-                $cover = self::HOST.$type.'/img/'.(ceil($id/1000)*1000).'/'.$id.'/1.jpg';
-                break;
-            default:
-                $cover = self::HOST.$type.'/img/'.(ceil($id/10000)*10000).'/'.$id.'/1.jpg';
-        }
-
         try {
-            return $this->uploadImage($cover, $id.'/1.jpg');
+            return $this->uploadImage($this->getCoverUrl($id, $type), $id.'/1.jpg');
         } catch (\Exception $e) {}
 
         return null;
@@ -489,22 +500,6 @@ class Filler extends FillerPlugin
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
     private function fillHeadData(Item $item, \DOMXPath $xpath, \DOMElement $head) {
-        // add main name
-        $names = $xpath->query('table[1]', $head)->item(0)->nodeValue;
-        $names = explode("\n", trim($names));
-
-        // clear
-        $name = preg_replace('/\[\d{4}\]/', '', array_shift($names)); // example: [2011]
-        $name = preg_replace('/\[?(ТВ|OVA|ONA)(\-\d)?\]?/', '', $name); // example: [TV-1]
-        $name = preg_replace('/\(фильм \w+\)/u', '', $name); // example: (фильм седьмой)
-        $item->setName(trim($name));
-
-        // add other names
-        foreach ($names as $name) {
-            $name = trim(preg_replace('/(\(\d+\))?/', '', $name));
-            $item->addName((new Name())->setName($name));
-        }
-
         /* @var $data \DOMElement */
         $data = $xpath->query('font', $head)->item(0);
         $length = $data->childNodes->length;
@@ -515,8 +510,8 @@ class Filler extends FillerPlugin
                     case 'Производство':
                         $j = 1;
                         do {
-                            if ($data->childNodes->item($i+$j)->nodeName == 'img') {
-                                $country_name = trim($data->childNodes->item($i+$j+1)->nodeValue);
+                            if ($data->childNodes->item($i+$j)->nodeName == 'a') {
+                                $country_name = trim($data->childNodes->item($i+$j)->nodeValue);
                                 if ($country_name && $country = $this->getCountryByName($country_name)) {
                                     $item->setCountry($country);
                                 }
@@ -542,13 +537,15 @@ class Filler extends FillerPlugin
                     // set type and add file info
                     case 'Тип':
                         $type = $data->childNodes->item($i+1)->nodeValue;
-                        if (preg_match('/(?<type>[\w\s]+)(?: \((?:(?<episodes_number>>?\d+) эп.)?(?<file_info>.*)\))?, (?<duration>\d{1,3}) мин\.$/u', $type, $match)) {
+                        if (preg_match('/(?<type>[\w\s]+)(?: \((?:(?<episodes_number>>?\d+) эп.)?(?<file_info>.*)\))?(, (?<duration>\d{1,3}) мин\.)?$/u', $type, $match)) {
                             // add type
                             if ($type = $this->getTypeByName(trim($match['type']))) {
                                 $item->setType($type);
                             }
                             // add duration
-                            $item->setDuration((int)$match['duration']);
+                            if (!empty($match['duration'])) {
+                                $item->setDuration((int)$match['duration']);
+                            }
                             // add number of episodes
                             if (!empty($match['episodes_number'])) {
                                 if ($match['episodes_number'][0] == '>') {
@@ -588,11 +585,23 @@ class Filler extends FillerPlugin
                             }
                         }
                         break;
+                    case 'Хронометраж':
+                        if (preg_match('/(?<duration>\d+)/', $data->childNodes->item($i+1)->nodeValue, $match)) {
+                            $item->setDuration((int)$match['duration']);
+                        }
+                        break;
+                    case 'Кол-во серий':
+                        $number = trim($data->childNodes->item($i+1)->nodeValue, ' :');
+                        if (strpos($number, '>') !== false) {
+                            $number = str_replace('>', '', $number).'+';
+                        }
+                        $item->setEpisodesNumber($number);
+                        break;
                 }
             }
         }
     }
-    
+
     /**
      * Fill body data
      *
@@ -637,9 +646,26 @@ class Filler extends FillerPlugin
                             $i++;
                         }
                         break;
+                    // get date premiere
+                    case 'Даты премьер и релизов':
+                        $rows = $xpath->query('tr/td/table/tr/td[3]', $body->childNodes->item($i+1));
+                        foreach ($rows as $row) {
+                            if (preg_match('/\d{4}\.\d{2}\.\d{2}/', $row->nodeValue, $match)) {
+                                $date = new \DateTime(str_replace('.', '-', $match[0]));
+                                if (!$item->getDatePremiere() || $item->getDatePremiere() > $date) {
+                                    $item->setDatePremiere($date);
+                                }
+                            }
+                        }
+                        break;
                     default:
                         // get frames
-                        if (strpos($value, 'кадры из аниме') !== false && $id && $frames) {
+                        if (
+                            (
+                                strpos($value, 'кадры из аниме') !== false ||
+                                strpos($value, 'Кадры из фильма') !== false
+                            ) && $id && $frames
+                        ) {
                             foreach ($this->getFrames($id, $type) as $frame) {
                                 $item->addImage((new Image())->setSource($frame));
                             }
@@ -687,6 +713,7 @@ class Filler extends FillerPlugin
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Country|null
      */
     private function getCountryByName($name) {
+        $name = str_replace('Южная Корея', 'Республика Корея', $name);
         $rep = $this->doctrine->getRepository('AnimeDbCatalogBundle:CountryTranslation');
         if ($country = $rep->findOneBy(['locale' => 'ru', 'content' => $name])) {
             return $country->getObject();
@@ -736,7 +763,7 @@ class Filler extends FillerPlugin
      */
     public function getFrames($id, $type)
     {
-        $dom = $this->browser->getDom(self::HOST.'animation/animation_photos.php?id='.$id);
+        $dom = $this->browser->getDom(self::HOST.$type.'/'.$type.'_photos.php?id='.$id);
         if (!$dom) {
             return [];
         }
@@ -744,14 +771,21 @@ class Filler extends FillerPlugin
         $frames = [];
         foreach ($images as $image) {
             $src = $this->getAttrAsArray($image)['src'];
-            $src = str_replace('optimize_b', 'optimize_d', $src);
-            if (strpos($src, 'http://') === false) {
-                $src = self::HOST.$type.'/'.$src;
-            }
-            if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
-                $src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])
-            ) {
-                $frames[] = $src;
+            if ($type == self::ITEM_TYPE_ANIMATION) {
+                $src = str_replace('optimize_b', 'optimize_d', $src);
+                if (strpos($src, 'http://') === false) {
+                    $src = self::HOST.$type.'/'.$src;
+                }
+                if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
+                    $src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])
+                ) {
+                    $frames[] = $src;
+                }
+            } elseif (preg_match('/_(?<round>\d+)\/.+\/(?<id>\d+)-(?<image>\d+)-.+(?<ext>\.jpe?g|png|gif)/', $src, $mat)) {
+                $src = self::HOST.$type.'/img/'.$mat['round'].'/'.$mat['id'].'/'.$mat['image'].$mat['ext'];
+                if ($src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])) {
+                    $frames[] = $src;
+                }
             }
         }
         return $frames;
@@ -819,12 +853,94 @@ class Filler extends FillerPlugin
      *
      * @return string
      */
-    protected function getItemType($url)
+    public function getItemType($url)
     {
-        if (strpos($url, self::ITEM_TYPE_ANIMATION)) {
+        if (strpos($url, self::ITEM_TYPE_ANIMATION.'/'.self::ITEM_TYPE_ANIMATION) !== false) {
             return self::ITEM_TYPE_ANIMATION;
-        } else {
+        } elseif (strpos($url, self::ITEM_TYPE_CINEMA.'/'.self::ITEM_TYPE_CINEMA) !== false) {
             return self::ITEM_TYPE_CINEMA;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Fill names for Animation type
+     *
+     * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
+     * @param \DOMXPath $xpath
+     * @param \DOMElement $head
+     *
+     * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
+     */
+    protected function fillAnimationNames(Item $item, \DOMXPath $xpath, \DOMElement $head)
+    {
+        // add main name
+        $names = $xpath->query('table[1]/tr/td', $head)->item(0)->nodeValue;
+        $names = explode("\n", trim($names));
+
+        // clear
+        $name = preg_replace('/\[\d{4}\]/', '', array_shift($names)); // example: [2011]
+        $name = preg_replace('/\[?(ТВ|OVA|ONA)(\-\d)?\]?/', '', $name); // example: [TV-1]
+        $name = preg_replace('/\(фильм \w+\)/u', '', $name); // example: (фильм седьмой)
+        $item->setName(trim($name));
+
+        // add other names
+        foreach ($names as $name) {
+            $name = trim(preg_replace('/(\(\d+\))?/', '', $name));
+            $item->addName((new Name())->setName($name));
+        }
+        return $item;
+    }
+
+    /**
+     * Fill names for Cinema type
+     *
+     * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
+     * @param \DOMXPath $xpath
+     * @param \DOMElement $head
+     *
+     * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
+     */
+    protected function fillCinemaNames(Item $item, \DOMXPath $xpath, \DOMElement $head)
+    {
+        // get list names
+        $names = [];
+        foreach ($xpath->query('table[1]/tr/td/table/tr/td', $head) as $name) {
+            $names[] = $name->nodeValue;
+        }
+
+        // clear
+        $name = preg_replace('/\[\d{4}\]/', '', array_shift($names)); // example: [2011]
+        $name = preg_replace('/\[?(ТВ|OVA|ONA)(\-\d)?\]?/', '', $name); // example: [TV-1]
+        $name = preg_replace('/\(фильм \w+\)/u', '', $name); // example: (фильм седьмой)
+        $item->setName(trim($name));
+
+        // add other names
+        foreach ($names as $name) {
+            $name = trim(preg_replace('/(\(\d+\))/', '', $name));
+            $item->addName((new Name())->setName($name));
+        }
+        return $item;
+    }
+
+    /**
+     * Get cover URL
+     *
+     * @param string $id
+     * @param string $type
+     *
+     * @return string|null
+     */
+    public function getCoverUrl($id, $type)
+    {
+        switch ($type) {
+            case self::ITEM_TYPE_ANIMATION:
+                return self::HOST.$type.'/img/'.(ceil($id/1000)*1000).'/'.$id.'/1.jpg';
+            case self::ITEM_TYPE_CINEMA:
+                return self::HOST.$type.'/img/'.(ceil($id/10000)*10000).'/'.$id.'/1.jpg';
+            default:
+                return null;
         }
     }
 }
