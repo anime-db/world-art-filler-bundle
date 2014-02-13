@@ -863,9 +863,9 @@ class Filler extends FillerPlugin
      */
     public function getItemType($url)
     {
-        if (strpos($url, self::ITEM_TYPE_ANIMATION.'/'.self::ITEM_TYPE_ANIMATION)) {
+        if (strpos($url, self::ITEM_TYPE_ANIMATION.'/'.self::ITEM_TYPE_ANIMATION) !== false) {
             return self::ITEM_TYPE_ANIMATION;
-        } elseif (strpos($url, self::ITEM_TYPE_CINEMA.'/'.self::ITEM_TYPE_CINEMA)) {
+        } elseif (strpos($url, self::ITEM_TYPE_CINEMA.'/'.self::ITEM_TYPE_CINEMA) !== false) {
             return self::ITEM_TYPE_CINEMA;
         } else {
             return null;
