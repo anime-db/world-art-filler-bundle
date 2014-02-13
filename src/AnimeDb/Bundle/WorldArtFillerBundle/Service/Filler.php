@@ -666,7 +666,12 @@ class Filler extends FillerPlugin
                         break;
                     default:
                         // get frames
-                        if (strpos($value, 'кадры из аниме') !== false && $id && $frames) {
+                        if (
+                            (
+                                strpos($value, 'кадры из аниме') !== false ||
+                                strpos($value, 'Кадры из фильма') !== false
+                            ) && $id && $frames
+                        ) {
                             foreach ($this->getFrames($id, $type) as $frame) {
                                 $item->addImage((new Image())->setSource($frame));
                             }
@@ -764,7 +769,7 @@ class Filler extends FillerPlugin
      */
     public function getFrames($id, $type)
     {
-        $dom = $this->browser->getDom(self::HOST.'animation/animation_photos.php?id='.$id);
+        $dom = $this->browser->getDom(self::HOST.$type.'/'.$type.'_photos.php?id='.$id);
         if (!$dom) {
             return [];
         }
@@ -772,14 +777,21 @@ class Filler extends FillerPlugin
         $frames = [];
         foreach ($images as $image) {
             $src = $this->getAttrAsArray($image)['src'];
-            $src = str_replace('optimize_b', 'optimize_d', $src);
-            if (strpos($src, 'http://') === false) {
-                $src = self::HOST.$type.'/'.$src;
-            }
-            if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
-                $src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])
-            ) {
-                $frames[] = $src;
+            if ($type == self::ITEM_TYPE_ANIMATION) {
+                $src = str_replace('optimize_b', 'optimize_d', $src);
+                if (strpos($src, 'http://') === false) {
+                    $src = self::HOST.$type.'/'.$src;
+                }
+                if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
+                    $src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])
+                ) {
+                    $frames[] = $src;
+                }
+            } elseif (preg_match('/_(?<round>\d+)\/.+\/(?<id>\d+)-(?<image>\d+)-.+(?<ext>\.jpe?g|png|gif)/', $src, $mat)) {
+                $src = self::HOST.$type.'/img/'.$mat['round'].'/'.$mat['id'].'/'.$mat['image'].$mat['ext'];
+                if ($src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])) {
+                    $frames[] = $src;
+                }
             }
         }
         return $frames;
