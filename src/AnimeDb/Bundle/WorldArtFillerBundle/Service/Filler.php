@@ -483,16 +483,8 @@ class Filler extends FillerPlugin
      * @return string|null
      */
     private function getCover($id, $type) {
-        switch ($type) {
-            case self::ITEM_TYPE_ANIMATION:
-                $cover = self::HOST.$type.'/img/'.(ceil($id/1000)*1000).'/'.$id.'/1.jpg';
-                break;
-            default:
-                $cover = self::HOST.$type.'/img/'.(ceil($id/10000)*10000).'/'.$id.'/1.jpg';
-        }
-
         try {
-            return $this->uploadImage($cover, $id.'/1.jpg');
+            return $this->uploadImage($this->getCoverUrl($id, $type), $id.'/1.jpg');
         } catch (\Exception $e) {}
 
         return null;
@@ -930,5 +922,25 @@ class Filler extends FillerPlugin
             $item->addName((new Name())->setName($name));
         }
         return $item;
+    }
+
+    /**
+     * Get cover URL
+     *
+     * @param string $id
+     * @param string $type
+     *
+     * @return string|null
+     */
+    public function getCoverUrl($id, $type)
+    {
+        switch ($type) {
+            case self::ITEM_TYPE_ANIMATION:
+                return self::HOST.$type.'/img/'.(ceil($id/1000)*1000).'/'.$id.'/1.jpg';
+            case self::ITEM_TYPE_CINEMA:
+                return self::HOST.$type.'/img/'.(ceil($id/10000)*10000).'/'.$id.'/1.jpg';
+            default:
+                return null;
+        }
     }
 }
