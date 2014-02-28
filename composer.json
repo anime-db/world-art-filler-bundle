@@ -12,7 +12,7 @@
         "php": ">=5.4.0",
         "ext-tidy": ">=2.0",
         "sensio/buzz-bundle": "1.0.*",
-        "anime-db/catalog-bundle": "0.3.*"
+        "anime-db/catalog-bundle": "0.4.*"
     },
     "minimum-stability": "dev"
 }
