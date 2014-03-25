@@ -236,10 +236,10 @@ class Refiller extends RefillerPlugin
         // do search
         if ($name) {
             $result = $this->search->search(['name' => $name]);
-            $empty_link = $this->search->getLinkForFill('');
             /* @var $item \AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Item */
             foreach ($result as $key => $item) {
-                $link = urldecode(str_replace($empty_link, '', $item->getLink()));
+                parse_str(parse_url($item->getLink(), PHP_URL_QUERY), $query);
+                $link = array_values($query)[0]['url'];
                 $result[$key] = new ItemRefiller($item->getName(), ['url' => $link], $link);
             }
         }
