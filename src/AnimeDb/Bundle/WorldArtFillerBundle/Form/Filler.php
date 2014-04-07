@@ -23,6 +23,24 @@ use AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler as FillerService;
  */
 class Filler extends AbstractType
 {
+
+    /**
+     * HTTP host
+     *
+     * @var string
+     */
+    protected $host;
+
+    /**
+     * Construct
+     *
+     * @param string $host
+     */
+    public function __construct($host)
+    {
+        $this->host = $host;
+    }
+
     /**
      * (non-PHPdoc)
      * @see \Symfony\Component\Form\AbstractType::buildForm()
@@ -34,7 +52,7 @@ class Filler extends AbstractType
             ->add('url', 'text', [
                 'label' => 'URL address',
                 'attr' => [
-                    'placeholder' => FillerService::HOST,
+                    'placeholder' => $this->host.'/',
                 ],
             ])
             ->add('frames', 'checkbox', [

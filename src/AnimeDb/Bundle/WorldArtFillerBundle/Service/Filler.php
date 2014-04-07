@@ -50,20 +50,6 @@ class Filler extends FillerPlugin
     const TITLE = 'World-Art.ru';
 
     /**
-     * Filler http host
-     *
-     * @var string
-     */
-    const HOST = 'http://www.world-art.ru/';
-
-    /**
-     * Path for search
-     *
-     * @var string
-     */
-    const SEARH_URL = 'search.php?public_search=#NAME#&global_sector=animation';
-
-    /**
      * XPath for fill item
      *
      * @var string
@@ -104,13 +90,6 @@ class Filler extends FillerPlugin
      * @var \Symfony\Component\Validator\Validator
      */
     private $validator;
-
-    /**
-     * Filesystem
-     *
-     * @var \Symfony\Component\Filesystem\Filesystem
-     */
-    private $fs;
 
     /**
      * World-Art genres
@@ -332,18 +311,11 @@ class Filler extends FillerPlugin
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
      * @param \Symfony\Component\Validator\Validator $validator
-     * @param \Symfony\Component\Filesystem\Filesystem $fs
      */
-    public function __construct(
-        Browser $browser,
-        Registry $doctrine,
-        Validator $validator,
-        Filesystem $fs
-    ) {
+    public function __construct(Browser $browser, Registry $doctrine, Validator $validator) {
         $this->browser  = $browser;
         $this->doctrine = $doctrine;
         $this->validator = $validator;
-        $this->fs = $fs;
     }
 
     /**
@@ -371,7 +343,7 @@ class Filler extends FillerPlugin
      */
     public function getForm()
     {
-        return new FillerForm();
+        return new FillerForm($this->browser->getHost());
     }
 
     /**
@@ -383,11 +355,11 @@ class Filler extends FillerPlugin
      */
     public function fill(array $data)
     {
-        if (empty($data['url']) || !is_string($data['url']) || strpos($data['url'], self::HOST) !== 0) {
+        if (empty($data['url']) || !is_string($data['url']) || strpos($data['url'], $this->browser->getHost()) !== 0) {
             return null;
         }
 
-        $dom = $this->browser->getDom($data['url']);
+        $dom = $this->browser->getDom(substr($data['url'], strlen($this->browser->getHost())));
         if (!($dom instanceof \DOMDocument)) {
             return null;
         }
@@ -420,7 +392,9 @@ class Filler extends FillerPlugin
         $links = $xpath->query('a', $nodes->item(1));
         for ($i = 0; $i < $links->length; $i++) {
             $link = $this->getAttrAsArray($links->item($i));
-            if (strpos($link['href'], 'http://') !== false && strpos($link['href'], self::HOST) === false) {
+            if (strpos($link['href'], 'http://') !== false &&
+                strpos($link['href'], $this->browser->getHost()) === false
+            ) {
                 $item->addSource((new Source())->setUrl($link['href']));
             }
         }
@@ -763,7 +737,7 @@ class Filler extends FillerPlugin
      */
     public function getFrames($id, $type)
     {
-        $dom = $this->browser->getDom(self::HOST.$type.'/'.$type.'_photos.php?id='.$id);
+        $dom = $this->browser->getDom('/'.$type.'/'.$type.'_photos.php?id='.$id);
         if (!$dom) {
             return [];
         }
@@ -774,7 +748,7 @@ class Filler extends FillerPlugin
             if ($type == self::ITEM_TYPE_ANIMATION) {
                 $src = str_replace('optimize_b', 'optimize_d', $src);
                 if (strpos($src, 'http://') === false) {
-                    $src = self::HOST.$type.'/'.$src;
+                    $src = $this->browser->getHost().'/'.$type.'/'.$src;
                 }
                 if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
                     $src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])
@@ -782,7 +756,7 @@ class Filler extends FillerPlugin
                     $frames[] = $src;
                 }
             } elseif (preg_match('/_(?<round>\d+)\/.+\/(?<id>\d+)-(?<image>\d+)-.+(?<ext>\.jpe?g|png|gif)/', $src, $mat)) {
-                $src = self::HOST.$type.'/img/'.$mat['round'].'/'.$mat['id'].'/'.$mat['image'].$mat['ext'];
+                $src = $this->browser->getHost().'/'.$type.'/img/'.$mat['round'].'/'.$mat['id'].'/'.$mat['image'].$mat['ext'];
                 if ($src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])) {
                     $frames[] = $src;
                 }
@@ -936,9 +910,9 @@ class Filler extends FillerPlugin
     {
         switch ($type) {
             case self::ITEM_TYPE_ANIMATION:
-                return self::HOST.$type.'/img/'.(ceil($id/1000)*1000).'/'.$id.'/1.jpg';
+                return $this->browser->getHost().'/'.$type.'/img/'.(ceil($id/1000)*1000).'/'.$id.'/1.jpg';
             case self::ITEM_TYPE_CINEMA:
-                return self::HOST.$type.'/img/'.(ceil($id/10000)*10000).'/'.$id.'/1.jpg';
+                return $this->browser->getHost().'/'.$type.'/img/'.(ceil($id/10000)*10000).'/'.$id.'/1.jpg';
             default:
                 return null;
         }
