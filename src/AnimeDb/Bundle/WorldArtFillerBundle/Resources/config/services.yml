@@ -3,7 +3,7 @@ services:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler
         arguments: [@anime_db.world_art.browser, @doctrine, @validator, @filesystem]
         tags:
-            -  { name: anime_db.filler }
+            - { name: anime_db.filler }
         calls:
             - [setRouter, ['@router']]
 
@@ -11,13 +11,13 @@ services:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Refiller
         arguments: [@anime_db.world_art.filler, @anime_db.world_art.search]
         tags:
-            -  { name: anime_db.refiller }
+            - { name: anime_db.refiller }
 
     anime_db.world_art.search:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Search
         arguments: [@anime_db.world_art.browser]
         tags:
-            -  { name: anime_db.search }
+            - { name: anime_db.search }
         calls:
             - [setRouter, ['@router']]
             - [setFiller, ['@anime_db.world_art.filler']]

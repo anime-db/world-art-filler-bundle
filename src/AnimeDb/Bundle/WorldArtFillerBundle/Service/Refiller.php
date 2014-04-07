@@ -262,8 +262,7 @@ class Refiller extends RefillerPlugin
             $source = new Source();
             $source->setUrl($data['url']);
             $item->addSource($source);
-            $new_item = $this->refill($item, $field);
-            $item = $this->fillItem($item, $new_item, $field);
+            $item = $this->refill($item, $field);
         }
         return $item;
     }
