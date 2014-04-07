@@ -50,13 +50,6 @@ class Filler extends FillerPlugin
     const TITLE = 'World-Art.ru';
 
     /**
-     * Path for search
-     *
-     * @var string
-     */
-    const SEARH_URL = 'search.php?public_search=#NAME#&global_sector=animation';
-
-    /**
      * XPath for fill item
      *
      * @var string
