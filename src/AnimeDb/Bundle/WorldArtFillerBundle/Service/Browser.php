@@ -10,8 +10,8 @@
 
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
-use Buzz\Browser as BrowserBuzz;
 use Symfony\Component\HttpFoundation\Request;
+use Guzzle\Http\Client;
 
 /**
  * Browser
@@ -32,34 +32,59 @@ class Browser
     /**
      * Browser
      *
-     * @var \Buzz\Browser
+     * @var \Guzzle\Http\Client
      */
-    private $browser;
+    protected $browser;
 
     /**
      * Request
      *
      * @var \Symfony\Component\HttpFoundation\Request
      */
-    private $request;
+    protected $request;
+
+    /**
+     * HTTP host
+     *
+     * @var string
+     */
+    protected $host;
+
+    /**
+     * Browser timeout
+     *
+     * @var integer
+     */
+    protected $timeout;
+
+    /**
+     * Browser proxy list
+     *
+     * @var array
+     */
+    protected $proxy_list;
 
     /**
      * Construct
      *
-     * @param \Buzz\Browser $browser
      * @param integer $timeout
      * @param array $proxy_list
      */
-    public function __construct(BrowserBuzz $browser, $timeout, array $proxy_list) {
-        // configure browser client
-        /* @var $client \Buzz\Client\Curl */
-        $client = $browser->getClient();
-        $client->setTimeout($timeout);
-        if ($proxy_list) {
-            $client->setProxy($proxy_list[array_rand($proxy_list)]);
-        }
+    public function __construct($host, $timeout, array $proxy_list)
+    {
+        $this->host = $host;
+        $this->proxy_list = $proxy_list;
+        $this->timeout = $timeout;
+    }
 
-        $this->browser = $browser;
+    /**
+     * Get host
+     *
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
     }
 
     /**
@@ -70,20 +95,27 @@ class Browser
     public function setRequest(Request $request = null)
     {
         $this->request = $request;
+        // try to set User-Agent from original request
+        if ($request && $this->browser) {
+            $this->browser->setDefaultHeaders([
+                'User-Agent' => $request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT)
+            ]);
+        }
     }
 
     /**
-     * Get DOMDocument from url
+     * Get DOMDocument from path
      *
      * Receive content from the URL, cleaning using Tidy and creating DOM document
      *
-     * @param string $url
+     * @param string $path
      *
      * @return \DOMDocument|null
      */
-    public function getDom($url) {
+    public function getDom($path)
+    {
         $dom = new \DOMDocument('1.0', 'utf8');
-        if (($content = $this->getContent($url)) && $dom->loadHTML($content)) {
+        if (($content = $this->getContent($path)) && $dom->loadHTML($content)) {
             return $dom;
         } else {
             return null;
@@ -91,24 +123,19 @@ class Browser
     }
 
     /**
-     * Get content from url
+     * Get content from path
      *
      * Receive content from the URL and cleaning using Tidy
      *
-     * @param string $url
+     * @param string $path
      *
      * @return string
      */
-    public function getContent($url) {
-        $headers = ['User-Agent' => self::DEFAULT_USER_AGENT];
-        // try to set User-Agent from original request
-        if ($this->request) {
-            $headers['User-Agent'] = $this->request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT);
-        }
-
-        /* @var $response \Buzz\Message\Response */
-        $response = $this->browser->get($url, $headers);
-        if ($response->getStatusCode() !== 200 || !($html = $response->getContent())) {
+    public function getContent($path)
+    {
+        /* @var $response \Guzzle\Http\Message\Response */
+        $response = $this->getBrowser()->get($path)->send();
+        if ($response->getStatusCode() !== 200 || !($html = $response->getBody(true))) {
             return null;
         }
         $html = iconv('windows-1251', 'utf-8', $html);
@@ -132,5 +159,31 @@ class Browser
         $html = preg_replace('/<noindex>.*?<\/noindex>/is', '', $html);
         // remove noembed
         return $html;
+    }
+
+    /**
+     * Get HTTP browser
+     *
+     * @param \Guzzle\Http\Client
+     */
+    protected function getBrowser()
+    {
+        if (!($this->browser instanceof Client)) {
+            $this->browser = new Client($this->host);
+
+            // try to set User-Agent from original request
+            $user_agent = self::DEFAULT_USER_AGENT;
+            if ($this->request) {
+                $user_agent = $this->request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT);
+            }
+            $this->browser->setDefaultHeaders(['User-Agent' => $user_agent]);
+
+            // configure browser client
+            $this->browser->setDefaultOption('timeout', $this->timeout);
+            if ($this->proxy_list) {
+                $this->browser->setDefaultOption('proxy', $this->proxy_list[array_rand($this->proxy_list)]);
+            }
+        }
+        return $this->browser;
     }
 }

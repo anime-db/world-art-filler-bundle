@@ -1,7 +1,7 @@
 services:
     anime_db.world_art.filler:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler
-        arguments: [@anime_db.world_art.browser, @doctrine, @validator, @filesystem]
+        arguments: [ @anime_db.world_art.browser, @doctrine, @validator, @filesystem ]
         tags:
             - { name: anime_db.filler }
         calls:
@@ -9,13 +9,13 @@ services:
 
     anime_db.world_art.refiller:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Refiller
-        arguments: [@anime_db.world_art.filler, @anime_db.world_art.search]
+        arguments: [ @anime_db.world_art.filler, @anime_db.world_art.search ]
         tags:
             - { name: anime_db.refiller }
 
     anime_db.world_art.search:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Search
-        arguments: [@anime_db.world_art.browser]
+        arguments: [ @anime_db.world_art.browser ]
         tags:
             - { name: anime_db.search }
         calls:
@@ -24,18 +24,9 @@ services:
 
     anime_db.world_art.browser:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
-        arguments: [@buzz.browser, %browser.timeout%, %browser.proxy% ]
+        arguments:
+            - %anime_db.world_art.browser.host%
+            - %anime_db.world_art.browser.timeout%
+            - %anime_db.world_art.browser.proxy%
         calls:
             - [setRequest, ['@?request=']]
-
-
-    # cURL client for Buzz
-    buzz.client.curl:
-        class:  Buzz\Client\Curl
-        public: false
-        calls:
-            - [ setVerifyPeer, [ false ] ]
-    # Buzz browser
-    buzz.browser:
-        class:     Buzz\Browser
-        arguments: [ @buzz.client.curl ]
