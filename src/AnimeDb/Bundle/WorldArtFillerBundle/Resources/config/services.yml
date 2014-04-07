@@ -9,7 +9,7 @@ services:
 
     anime_db.world_art.refiller:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Refiller
-        arguments: [ @anime_db.world_art.filler, @anime_db.world_art.search ]
+        arguments: [ @anime_db.world_art.filler, @anime_db.world_art.search, @anime_db.world_art.browser ]
         tags:
             - { name: anime_db.refiller }
 

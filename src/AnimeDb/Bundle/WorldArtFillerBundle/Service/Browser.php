@@ -67,6 +67,7 @@ class Browser
     /**
      * Construct
      *
+     * @param string $host
      * @param integer $timeout
      * @param array $proxy_list
      */
@@ -135,6 +136,9 @@ class Browser
     {
         /* @var $response \Guzzle\Http\Message\Response */
         $response = $this->getBrowser()->get($path)->send();
+        if ($response->isError()) {
+            throw new \RuntimeException('Failed to query the server '.$this->host);
+        }
         if ($response->getStatusCode() !== 200 || !($html = $response->getBody(true))) {
             return null;
         }

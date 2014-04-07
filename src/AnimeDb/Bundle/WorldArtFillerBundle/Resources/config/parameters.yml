@@ -1,4 +1,4 @@
 parameters:
     anime_db.world_art.browser.timeout: 10
     anime_db.world_art.browser.proxy: []
-    anime_db.world_art.browser.host: 'http://www.world-art.ru/'
+    anime_db.world_art.browser.host: 'http://www.world-art.ru'
