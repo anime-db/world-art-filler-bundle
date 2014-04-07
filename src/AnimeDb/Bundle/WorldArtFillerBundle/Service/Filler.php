@@ -99,13 +99,6 @@ class Filler extends FillerPlugin
     private $validator;
 
     /**
-     * Filesystem
-     *
-     * @var \Symfony\Component\Filesystem\Filesystem
-     */
-    private $fs;
-
-    /**
      * World-Art genres
      *
      * @var array
@@ -325,18 +318,11 @@ class Filler extends FillerPlugin
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
      * @param \Symfony\Component\Validator\Validator $validator
-     * @param \Symfony\Component\Filesystem\Filesystem $fs
      */
-    public function __construct(
-        Browser $browser,
-        Registry $doctrine,
-        Validator $validator,
-        Filesystem $fs
-    ) {
+    public function __construct(Browser $browser, Registry $doctrine, Validator $validator) {
         $this->browser  = $browser;
         $this->doctrine = $doctrine;
         $this->validator = $validator;
-        $this->fs = $fs;
     }
 
     /**

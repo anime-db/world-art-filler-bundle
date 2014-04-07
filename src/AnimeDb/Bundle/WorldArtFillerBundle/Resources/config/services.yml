@@ -1,7 +1,7 @@
 services:
     anime_db.world_art.filler:
         class: AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler
-        arguments: [ @anime_db.world_art.browser, @doctrine, @validator, @filesystem ]
+        arguments: [ @anime_db.world_art.browser, @doctrine, @validator ]
         tags:
             - { name: anime_db.filler }
         calls:
