@@ -458,7 +458,7 @@ class Filler extends FillerPlugin
      */
     private function getCover($id, $type) {
         try {
-            return $this->uploadImage($this->getCoverUrl($id, $type), $id.'/1.jpg');
+            return $this->uploadImage($this->getCoverUrl($id, $type), self::NAME.'/'.$id.'/1.jpg');
         } catch (\Exception $e) {}
 
         return null;
@@ -751,13 +751,13 @@ class Filler extends FillerPlugin
                     $src = $this->browser->getHost().'/'.$type.'/'.$src;
                 }
                 if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
-                    $src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])
+                    $src = $this->uploadImage($src, self::NAME.'/'.$id.'/'.$mat['image'].$mat['ext'])
                 ) {
                     $frames[] = $src;
                 }
             } elseif (preg_match('/_(?<round>\d+)\/.+\/(?<id>\d+)-(?<image>\d+)-.+(?<ext>\.jpe?g|png|gif)/', $src, $mat)) {
                 $src = $this->browser->getHost().'/'.$type.'/img/'.$mat['round'].'/'.$mat['id'].'/'.$mat['image'].$mat['ext'];
-                if ($src = $this->uploadImage($src, $id.'/'.$mat['image'].$mat['ext'])) {
+                if ($src = $this->uploadImage($src, self::NAME.'/'.$id.'/'.$mat['image'].$mat['ext'])) {
                     $frames[] = $src;
                 }
             }
