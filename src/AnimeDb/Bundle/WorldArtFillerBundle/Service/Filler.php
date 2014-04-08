@@ -142,7 +142,7 @@ class Filler extends FillerPlugin
         'этти' => 'Ecchi',
         'ужасы' => 'Horror',
         'хентай' => 'Hentai',
-        'юри' => 'Urey',
+        'юри' => 'Yuri',
         'яой' => 'Yaoi',
     ];
 
