@@ -13,7 +13,6 @@ namespace AnimeDb\Bundle\WorldArtFillerBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler as FillerService;
 
 /**
  * Get item from filler
