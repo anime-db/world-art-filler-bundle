@@ -38,18 +38,11 @@ class Search extends SearchPlugin
     const TITLE = 'World-Art.ru';
 
     /**
-     * Filler http host
-     *
-     * @var string
-     */
-    const HOST = 'http://www.world-art.ru/';
-
-    /**
      * Path for search
      *
      * @var string
      */
-    const SEARH_URL = 'search.php?public_search=#NAME#&global_sector=all';
+    const SEARH_URL = '/search.php?public_search=#NAME#&global_sector=all';
 
     /**
      * XPath for list search items
@@ -111,7 +104,7 @@ class Search extends SearchPlugin
         $name = iconv('utf-8', 'cp1251', $data['name']);
         $url = str_replace('#NAME#', urlencode($name), self::SEARH_URL);
         // get list from xpath
-        $dom = $this->browser->getDom(self::HOST.$url);
+        $dom = $this->browser->getDom($url);
         $xpath = new \DOMXPath($dom);
 
         // if for request is found only one result is produced forwarding
@@ -120,7 +113,7 @@ class Search extends SearchPlugin
             list(, $url) = explode('url=', $refresh->item(0)->nodeValue, 2);
             // add http if need
             if ($url[0] == '/') {
-                $url = self::HOST.substr($url, 1);
+                $url = $this->browser->getHost().substr($url, 1);
             }
             $name = iconv('cp1251', 'utf-8', $name);
             if (!preg_match('/id=(?<id>\d+)/', $url, $mat) || !($type = $this->filler->getItemType($url))) {
@@ -150,7 +143,7 @@ class Search extends SearchPlugin
             ) {
                 $list[] = new ItemSearch(
                     str_replace(["\r\n", "\n"], ' ', $name),
-                    $this->getLinkForFill(self::HOST.$href),
+                    $this->getLinkForFill($this->browser->getHost().$href),
                     $this->filler->getCoverUrl($mat['id'], $type),
                     trim(str_replace($name, '', $el->nodeValue))
                 );

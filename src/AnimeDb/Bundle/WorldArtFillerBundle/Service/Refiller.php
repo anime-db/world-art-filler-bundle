@@ -40,13 +40,6 @@ class Refiller extends RefillerPlugin
     const TITLE = 'World-Art.ru';
 
     /**
-     * Filler http host
-     *
-     * @var string
-     */
-    const HOST = 'http://www.world-art.ru/';
-
-    /**
      * List of supported fields
      *
      * @var array
@@ -81,15 +74,24 @@ class Refiller extends RefillerPlugin
     protected $search;
 
     /**
+     * Browser
+     *
+     * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
+     */
+    private $browser;
+
+    /**
      * Construct
      *
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler $filler
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Search $search
+     * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
      */
-    public function __construct(Filler $filler, Search $search)
+    public function __construct(Filler $filler, Search $search, Browser $browser)
     {
         $this->filler = $filler;
         $this->search = $search;
+        $this->browser = $browser;
     }
 
     /**
@@ -125,7 +127,7 @@ class Refiller extends RefillerPlugin
         }
         /* @var $source \AnimeDb\Bundle\CatalogBundle\Entity\Source */
         foreach ($item->getSources() as $source) {
-            if (strpos($source->getUrl(), self::HOST) === 0) {
+            if (strpos($source->getUrl(), $this->browser->getHost()) === 0) {
                 return true;
             }
         }
@@ -145,7 +147,7 @@ class Refiller extends RefillerPlugin
         // get source url
         $url = '';
         foreach ($item->getSources() as $source) {
-            if (strpos($source->getUrl(), self::HOST) === 0) {
+            if (strpos($source->getUrl(), $this->browser->getHost()) === 0) {
                 $url = $source->getUrl();
                 break;
             }
@@ -211,7 +213,7 @@ class Refiller extends RefillerPlugin
         // search source url
         $url = '';
         foreach ($item->getSources() as $source) {
-            if (strpos($source->getUrl(), self::HOST) === 0) {
+            if (strpos($source->getUrl(), $this->browser->getHost()) === 0) {
                 $url = $source->getUrl();
                 break;
             }
@@ -236,10 +238,10 @@ class Refiller extends RefillerPlugin
         // do search
         if ($name) {
             $result = $this->search->search(['name' => $name]);
-            $empty_link = $this->search->getLinkForFill('');
             /* @var $item \AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Item */
             foreach ($result as $key => $item) {
-                $link = urldecode(str_replace($empty_link, '', $item->getLink()));
+                parse_str(parse_url($item->getLink(), PHP_URL_QUERY), $query);
+                $link = array_values($query)[0]['url'];
                 $result[$key] = new ItemRefiller($item->getName(), ['url' => $link], $link);
             }
         }
@@ -262,8 +264,7 @@ class Refiller extends RefillerPlugin
             $source = new Source();
             $source->setUrl($data['url']);
             $item->addSource($source);
-            $new_item = $this->refill($item, $field);
-            $item = $this->fillItem($item, $new_item, $field);
+            $item = $this->refill($item, $field);
         }
         return $item;
     }
@@ -333,7 +334,7 @@ class Refiller extends RefillerPlugin
                     // check of the existence of the source
                     /* @var $source \AnimeDb\Bundle\CatalogBundle\Entity\Source */
                     foreach ($item->getSources() as $source) {
-                        if ($new_source->getUrl() == $name->getUrl()) {
+                        if ($new_source->getUrl() == $source->getUrl()) {
                             continue 2;
                         }
                     }
