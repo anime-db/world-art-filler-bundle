@@ -334,7 +334,7 @@ class Refiller extends RefillerPlugin
                     // check of the existence of the source
                     /* @var $source \AnimeDb\Bundle\CatalogBundle\Entity\Source */
                     foreach ($item->getSources() as $source) {
-                        if ($new_source->getUrl() == $name->getUrl()) {
+                        if ($new_source->getUrl() == $source->getUrl()) {
                             continue 2;
                         }
                     }
