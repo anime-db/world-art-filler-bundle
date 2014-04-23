@@ -53,6 +53,13 @@ class Search extends SearchPlugin
     const XPATH_FOR_LIST = '//center/table/tr/td/table/tr/td/table/tr/td';
 
     /**
+     * Default sector
+     *
+     * @var string
+     */
+    const DEFAULT_SECTOR = 'all';
+
+    /**
      * Browser
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
@@ -104,7 +111,7 @@ class Search extends SearchPlugin
     {
         $name = iconv('utf-8', 'cp1251', $data['name']);
         $url = str_replace('#NAME#', urlencode($name), self::SEARH_URL);
-        $url = str_replace('#SECTOR#', $data['type'] ? $data['type'] : 'all', $url);
+        $url = str_replace('#SECTOR#', $data['type'] ? $data['type'] : self::DEFAULT_SECTOR, $url);
         // get list from xpath
         $dom = $this->browser->getDom($url);
         $xpath = new \DOMXPath($dom);
