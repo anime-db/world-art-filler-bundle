@@ -13,6 +13,7 @@ namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Search as SearchPlugin;
 use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Item as ItemSearch;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use AnimeDb\Bundle\WorldArtFillerBundle\Form\Search as SearchForm;
 
 /**
  * Search from site world-art.ru
@@ -42,7 +43,7 @@ class Search extends SearchPlugin
      *
      * @var string
      */
-    const SEARH_URL = '/search.php?public_search=#NAME#&global_sector=all';
+    const SEARH_URL = '/search.php?public_search=#NAME#&global_sector=#SECTOR#';
 
     /**
      * XPath for list search items
@@ -50,6 +51,13 @@ class Search extends SearchPlugin
      * @var string
      */
     const XPATH_FOR_LIST = '//center/table/tr/td/table/tr/td/table/tr/td';
+
+    /**
+     * Default sector
+     *
+     * @var string
+     */
+    const DEFAULT_SECTOR = 'all';
 
     /**
      * Browser
@@ -103,6 +111,7 @@ class Search extends SearchPlugin
     {
         $name = iconv('utf-8', 'cp1251', $data['name']);
         $url = str_replace('#NAME#', urlencode($name), self::SEARH_URL);
+        $url = str_replace('#SECTOR#', $data['type'] ? $data['type'] : self::DEFAULT_SECTOR, $url);
         // get list from xpath
         $dom = $this->browser->getDom($url);
         $xpath = new \DOMXPath($dom);
@@ -151,5 +160,15 @@ class Search extends SearchPlugin
         }
 
         return $list;
+    }
+
+    /**
+     * Get form
+     *
+     * @return \AnimeDb\Bundle\WorldArtFillerBundle\Form\Search
+     */
+    public function getForm()
+    {
+        return new SearchForm();
     }
 }

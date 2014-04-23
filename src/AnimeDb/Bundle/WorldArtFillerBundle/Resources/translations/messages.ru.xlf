@@ -6,6 +6,14 @@
                 <source>Upload frames</source>
                 <target>Загружать кадры</target>
             </trans-unit>
+            <trans-unit id="2">
+                <source>Anime</source>
+                <target>Аниме</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>Cinema</source>
+                <target>Кино</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
