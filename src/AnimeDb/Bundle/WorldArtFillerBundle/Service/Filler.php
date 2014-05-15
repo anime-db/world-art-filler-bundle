@@ -25,6 +25,7 @@ use AnimeDb\Bundle\AppBundle\Entity\Field\Image as ImageField;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
+use Knp\Menu\ItemInterface;
 
 /**
  * Filler from site world-art.ru
@@ -344,6 +345,21 @@ class Filler extends FillerPlugin
     public function getForm()
     {
         return new FillerForm($this->browser->getHost());
+    }
+
+    /**
+     * Build menu for plugin
+     *
+     * @param \Knp\Menu\ItemInterface $item
+     *
+     * @return \Knp\Menu\ItemInterface
+     */
+    public function buildMenu(ItemInterface $item)
+    {
+        $item->addChild($this->getTitle(), [
+            'route' => 'fill_filler',
+            'routeParameters' => ['plugin' => $this->getName()]
+        ])->setLinkAttribute('class', 'icon-label icon-label-plugin-world-art');
     }
 
     /**
