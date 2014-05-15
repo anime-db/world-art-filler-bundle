@@ -4,14 +4,14 @@
     "type": "anime-db-plugin",
     "description": "Plugin World-Art for the catalog Anime DB",
     "homepage": "http://github.com/anime-db/world-art-filler-bundle",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "autoload": {
         "psr-0": { "AnimeDb\\Bundle\\WorldArtFillerBundle": "src/" }
     },
     "require": {
         "php": ">=5.4.0",
         "ext-tidy": ">=2.0",
-        "anime-db/catalog-bundle": "0.4.*"
+        "anime-db/catalog-bundle": ">=0.4.8"
     },
     "minimum-stability": "dev"
 }
