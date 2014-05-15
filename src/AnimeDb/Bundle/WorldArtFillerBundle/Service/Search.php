@@ -14,6 +14,7 @@ use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Search as SearchPlugin;
 use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Item as ItemSearch;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AnimeDb\Bundle\WorldArtFillerBundle\Form\Search as SearchForm;
+use Knp\Menu\ItemInterface;
 
 /**
  * Search from site world-art.ru
@@ -91,6 +92,21 @@ class Search extends SearchPlugin
      */
     public function getTitle() {
         return self::TITLE;
+    }
+
+    /**
+     * Build menu for plugin
+     *
+     * @param \Knp\Menu\ItemInterface $item
+     *
+     * @return \Knp\Menu\ItemInterface
+     */
+    public function buildMenu(ItemInterface $item)
+    {
+        $item->addChild($this->getTitle(), [
+            'route' => 'fill_filler',
+            'routeParameters' => ['plugin' => $this->getName()]
+        ])->setLinkAttribute('class', 'icon-label icon-label-plugin-world-art');
     }
 
     /**
