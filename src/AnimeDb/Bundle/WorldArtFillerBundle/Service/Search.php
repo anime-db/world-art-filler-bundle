@@ -136,7 +136,7 @@ class Search extends SearchPlugin
             list(, $url) = explode('url=', $refresh->item(0)->nodeValue, 2);
             // add http if need
             if ($url[0] == '/') {
-                $url = $this->browser->getHost().substr($url, 1);
+                $url = $this->browser->getHost().$url;
             }
             $name = iconv('cp1251', 'utf-8', $name);
             if (!preg_match('/id=(?<id>\d+)/', $url, $mat) || !($type = $this->filler->getItemType($url))) {
@@ -166,7 +166,7 @@ class Search extends SearchPlugin
             ) {
                 $list[] = new ItemSearch(
                     str_replace(["\r\n", "\n"], ' ', $name),
-                    $this->getLinkForFill($this->browser->getHost().$href),
+                    $this->getLinkForFill($this->browser->getHost().'/'.$href),
                     $this->filler->getCoverUrl($mat['id'], $type),
                     trim(str_replace($name, '', $el->nodeValue))
                 );
