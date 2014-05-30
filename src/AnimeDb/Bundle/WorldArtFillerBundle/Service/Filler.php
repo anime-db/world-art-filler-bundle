@@ -443,7 +443,7 @@ class Filler extends FillerPlugin
         $this->fillHeadData($item, $xpath, $head->item(0));
 
         // fill body data
-        $this->fillBodyData($item, $xpath, $body, $id, $data['frames'], $type);
+        $this->fillBodyData($item, $xpath, $body, $id, !empty($data['frames']), $type);
         return $item;
     }
 
