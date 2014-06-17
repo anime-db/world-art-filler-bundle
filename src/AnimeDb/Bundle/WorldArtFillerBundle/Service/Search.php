@@ -168,7 +168,8 @@ class Search extends SearchPlugin
                     str_replace(["\r\n", "\n"], ' ', $name),
                     $this->getLinkForFill($this->browser->getHost().'/'.$href),
                     $this->filler->getCoverUrl($mat['id'], $type),
-                    trim(str_replace($name, '', $el->nodeValue))
+                    trim(str_replace($name, '', $el->nodeValue)),
+                    $this->browser->getHost().'/'.$href
                 );
             }
         }
