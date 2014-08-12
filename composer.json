@@ -8,6 +8,9 @@
     "autoload": {
         "psr-4": { "AnimeDb\\Bundle\\WorldArtFillerBundle\\": "src/" }
     },
+    "autoload-dev": {
+        "psr-4": { "AnimeDb\\Bundle\\WorldArtFillerBundle\\Tests\\": "tests/" }
+    },
     "require": {
         "php": ">=5.4.0",
         "ext-tidy": ">=2.0",
