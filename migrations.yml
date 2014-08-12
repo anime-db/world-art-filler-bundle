@@ -1,2 +1,2 @@
 migrations_namespace: 'AnimeDb\Bundle\WorldArtFillerBundle\DoctrineMigrations'
-migrations_directory: 'src/AnimeDb/Bundle/WorldArtFillerBundle/DoctrineMigrations'
+migrations_directory: 'src/DoctrineMigrations'
