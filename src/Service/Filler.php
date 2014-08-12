@@ -22,7 +22,7 @@ use AnimeDb\Bundle\CatalogBundle\Entity\Image;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Filesystem\Filesystem;
 use AnimeDb\Bundle\AppBundle\Entity\Field\Image as ImageField;
-use Symfony\Component\Validator\Validator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
 use Knp\Menu\ItemInterface;
@@ -88,7 +88,7 @@ class Filler extends FillerPlugin
     /**
      * Validator
      *
-     * @var \Symfony\Component\Validator\Validator
+     * @var \Symfony\Component\Validator\Validator\ValidatorInterface
      */
     private $validator;
 
@@ -311,9 +311,9 @@ class Filler extends FillerPlugin
      *
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
-     * @param \Symfony\Component\Validator\Validator $validator
+     * @param \Symfony\Component\Validator\Validator\ValidatorInterface $validator
      */
-    public function __construct(Browser $browser, Registry $doctrine, Validator $validator) {
+    public function __construct(Browser $browser, Registry $doctrine, ValidatorInterface $validator) {
         $this->browser  = $browser;
         $this->doctrine = $doctrine;
         $this->validator = $validator;
