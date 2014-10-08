@@ -10,7 +10,7 @@
 
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Form;
 
-use AnimeDb\Bundle\CatalogBundle\Form\Plugin\Search as SearchForm;
+use AnimeDb\Bundle\CatalogBundle\Form\Type\Plugin\Search as SearchForm;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
