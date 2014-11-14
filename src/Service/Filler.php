@@ -18,7 +18,7 @@ use AnimeDb\Bundle\CatalogBundle\Entity\Name;
 use AnimeDb\Bundle\CatalogBundle\Entity\Image;
 use AnimeDb\Bundle\AppBundle\Entity\Field\Image as ImageField;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
+use AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Filler as FillerForm;
 use Knp\Menu\ItemInterface;
 
 /**
@@ -334,7 +334,7 @@ class Filler extends FillerPlugin
     /**
      * Get form
      *
-     * @return \AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler
+     * @return \AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Filler
      */
     public function getForm()
     {
