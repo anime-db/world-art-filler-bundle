@@ -15,15 +15,9 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use AnimeDb\Bundle\CatalogBundle\Entity\Item;
 use AnimeDb\Bundle\CatalogBundle\Entity\Source;
 use AnimeDb\Bundle\CatalogBundle\Entity\Name;
-use AnimeDb\Bundle\CatalogBundle\Entity\Country;
-use AnimeDb\Bundle\CatalogBundle\Entity\Genre;
-use AnimeDb\Bundle\CatalogBundle\Entity\Type;
 use AnimeDb\Bundle\CatalogBundle\Entity\Image;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Filesystem\Filesystem;
 use AnimeDb\Bundle\AppBundle\Entity\Field\Image as ImageField;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
 use Knp\Menu\ItemInterface;
 
