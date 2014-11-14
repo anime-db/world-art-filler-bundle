@@ -673,21 +673,6 @@ class Filler extends FillerPlugin
     }
 
     /**
-     * Create unique file name
-     *
-     * @param string $path
-     * @param string $ext
-     *
-     * @return string
-     */
-    private function createFileName($path, $ext) {
-        do {
-            $file_name = uniqid();
-        } while (file_exists($path.$file_name.'.'.$ext));
-        return $path.$file_name.'.'.$ext;
-    }
-
-    /**
      * Get real country by name
      *
      * @param integer $id
