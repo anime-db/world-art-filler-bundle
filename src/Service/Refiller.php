@@ -15,6 +15,7 @@ use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Refiller\Item as ItemRefiller;
 use AnimeDb\Bundle\CatalogBundle\Entity\Item;
 use AnimeDb\Bundle\CatalogBundle\Entity\Source;
 use AnimeDb\Bundle\CatalogBundle\Entity\Image;
+use AnimeDb\Bundle\CatalogBundle\Entity\Name;
 
 /**
  * Refiller from site world-art.ru
@@ -292,39 +293,19 @@ class Refiller extends RefillerPlugin
             case self::FIELD_GENRES:
                 /* @var $new_genre \AnimeDb\Bundle\CatalogBundle\Entity\Genre */
                 foreach ($new_item->getGenres() as $new_genre) {
-                    // check of the existence of the genre
-                    /* @var $genre \AnimeDb\Bundle\CatalogBundle\Entity\Genre */
-                    foreach ($item->getGenres() as $genre) {
-                        if ($new_genre->getName() == $genre->getName()) {
-                            continue 2;
-                        }
-                    }
                     $item->addGenre($new_genre);
                 }
                 break;
             case self::FIELD_NAMES:
-                /* @var $new_name \AnimeDb\Bundle\CatalogBundle\Entity\Name */
-                foreach ($new_item->getNames() as $new_name) {
-                    // check of the existence of the name
-                    /* @var $name \AnimeDb\Bundle\CatalogBundle\Entity\Name */
-                    foreach ($item->getNames() as $name) {
-                        if ($new_name->getName() == $name->getName()) {
-                            continue 2;
-                        }
-                    }
+                // set main name in top of names list
+                $new_names = $new_item->getNames()->toArray();
+                array_unshift($new_names, (new Name())->setName($new_item->getName()));
+                foreach ($new_names as $new_name) {
                     $item->addName($new_name);
                 }
                 break;
             case self::FIELD_SOURCES:
-                /* @var $new_source \AnimeDb\Bundle\CatalogBundle\Entity\Source */
                 foreach ($new_item->getSources() as $new_source) {
-                    // check of the existence of the source
-                    /* @var $source \AnimeDb\Bundle\CatalogBundle\Entity\Source */
-                    foreach ($item->getSources() as $source) {
-                        if ($new_source->getUrl() == $source->getUrl()) {
-                            continue 2;
-                        }
-                    }
                     $item->addSource($new_source);
                 }
                 break;
