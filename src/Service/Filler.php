@@ -16,8 +16,7 @@ use AnimeDb\Bundle\CatalogBundle\Entity\Item;
 use AnimeDb\Bundle\CatalogBundle\Entity\Source;
 use AnimeDb\Bundle\CatalogBundle\Entity\Name;
 use AnimeDb\Bundle\CatalogBundle\Entity\Image;
-use AnimeDb\Bundle\AppBundle\Entity\Field\Image as ImageField;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use AnimeDb\Bundle\AppBundle\Service\Downloader;
 use AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Filler as FillerForm;
 use Knp\Menu\ItemInterface;
 
@@ -70,28 +69,28 @@ class Filler extends FillerPlugin
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
      */
-    private $browser;
+    protected $browser;
 
     /**
      * Doctrine
      *
      * @var \Doctrine\Bundle\DoctrineBundle\Registry
      */
-    private $doctrine;
+    protected $doctrine;
 
     /**
-     * Validator
+     * Downloader
      *
-     * @var \Symfony\Component\Validator\Validator\ValidatorInterface
+     * @var \AnimeDb\Bundle\AppBundle\Service\Downloader
      */
-    private $validator;
+    protected $downloader;
 
     /**
      * World-Art genres
      *
      * @var array
      */
-    private $genres = [
+    protected $genres = [
         'боевик' => 'Action',
         'фильм действия' => 'Action',
         'боевые искусства' => 'Martial arts',
@@ -146,7 +145,7 @@ class Filler extends FillerPlugin
      *
      * @var array
      */
-    private $types = [
+    protected $types = [
         'ТВ' => 'tv',
         'ТВ-спэшл' => 'special',
         'OVA' => 'ova',
@@ -163,7 +162,7 @@ class Filler extends FillerPlugin
      *
      * @var array
      */
-    private $studios = [
+    protected $studios = [
         1 => 'Studio Ghibli',
         3 => 'Gainax',
         4 => 'AIC',
@@ -305,12 +304,12 @@ class Filler extends FillerPlugin
      *
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
-     * @param \Symfony\Component\Validator\Validator\ValidatorInterface $validator
+     * @param \\AnimeDb\Bundle\AppBundle\Service\Downloader $downloader
      */
-    public function __construct(Browser $browser, Registry $doctrine, ValidatorInterface $validator) {
+    public function __construct(Browser $browser, Registry $doctrine, Downloader $downloader) {
         $this->browser  = $browser;
         $this->doctrine = $doctrine;
-        $this->validator = $validator;
+        $this->downloader = $downloader;
     }
 
     /**
@@ -661,15 +660,13 @@ class Filler extends FillerPlugin
      * Upload image from url
      *
      * @param string $url
-     * @param string|null $target
+     * @param string $target
      *
      * @return string
      */
-    public function uploadImage($url, $target = null) {
-        $image = new ImageField();
-        $image->setRemote($url);
-        $image->upload($this->validator, $target);
-        return $image->getPath();
+    public function uploadImage($url, $target) {
+        $this->downloader->image($url, $target);
+        return $target;
     }
 
     /**
