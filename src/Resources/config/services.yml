@@ -30,3 +30,9 @@ services:
             - %anime_db.world_art.browser.proxy%
         calls:
             - [setRequest, ['@?request=']]
+
+    anime_db.world_art.listener.refiller:
+        class: AnimeDb\Bundle\WorldArtFillerBundle\Event\Listener\Refiller
+        arguments: [ @event_dispatcher, @anime_db.world_art.refiller, @anime_db.world_art.filler ]
+        tags:
+            - { name: kernel.event_listener, event: anime_db.storage.add_new_item, method: onAddNewItem }
