@@ -12,6 +12,7 @@ namespace AnimeDb\Bundle\WorldArtFillerBundle\Form\Type;
 
 use AnimeDb\Bundle\CatalogBundle\Form\Type\Plugin\Search as SearchForm;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Search from
@@ -34,6 +35,17 @@ class Search extends SearchForm
                 'cinema' => 'Cinema'
             ],
             'required' => false
+        ]);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Symfony\Component\Form.AbstractType::setDefaultOptions()
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'csrf_protection' => false
         ]);
     }
 }
