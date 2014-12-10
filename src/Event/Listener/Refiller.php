@@ -102,21 +102,25 @@ class Refiller
             if (!$item->getType()) {
                 $item->setType($new_item->getType());
             }
+            // remove links
+            $item->getCountry()->removeItem($new_item);
+            $item->getType()->removeItem($new_item);
+            $item->getStudio()->removeItem($new_item);
 
             if (!$item->getCover()) {
                 $item->setCover($new_item->getCover());
             }
             foreach ($new_item->getGenres() as $genre) {
-                $item->addGenre($genre);
+                $item->addGenre($genre->removeItem($new_item));
             }
             // set main name in top of names list
             $new_names = $new_item->getNames()->toArray();
             array_unshift($new_names, (new Name())->setName($new_item->getName()));
             foreach ($new_names as $new_name) {
-                $item->addName($new_name);
+                $item->addName($new_name->setItem(null));
             }
             foreach ($new_item->getSources() as $source) {
-                $item->addSource($source);
+                $item->addSource($source->setItem(null));
             }
 
             $event->addFiller($this->filler);
