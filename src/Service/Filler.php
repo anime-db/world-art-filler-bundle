@@ -15,17 +15,11 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use AnimeDb\Bundle\CatalogBundle\Entity\Item;
 use AnimeDb\Bundle\CatalogBundle\Entity\Source;
 use AnimeDb\Bundle\CatalogBundle\Entity\Name;
-use AnimeDb\Bundle\CatalogBundle\Entity\Country;
-use AnimeDb\Bundle\CatalogBundle\Entity\Genre;
-use AnimeDb\Bundle\CatalogBundle\Entity\Type;
 use AnimeDb\Bundle\CatalogBundle\Entity\Image;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Filesystem\Filesystem;
-use AnimeDb\Bundle\AppBundle\Entity\Field\Image as ImageField;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler as FillerForm;
+use AnimeDb\Bundle\AppBundle\Service\Downloader;
+use AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Filler as FillerForm;
 use Knp\Menu\ItemInterface;
+use AnimeDb\Bundle\AppBundle\Service\Downloader\Entity\EntityInterface;
 
 /**
  * Filler from site world-art.ru
@@ -76,28 +70,28 @@ class Filler extends FillerPlugin
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
      */
-    private $browser;
+    protected $browser;
 
     /**
      * Doctrine
      *
      * @var \Doctrine\Bundle\DoctrineBundle\Registry
      */
-    private $doctrine;
+    protected $doctrine;
 
     /**
-     * Validator
+     * Downloader
      *
-     * @var \Symfony\Component\Validator\Validator\ValidatorInterface
+     * @var \AnimeDb\Bundle\AppBundle\Service\Downloader
      */
-    private $validator;
+    protected $downloader;
 
     /**
      * World-Art genres
      *
      * @var array
      */
-    private $genres = [
+    protected $genres = [
         'боевик' => 'Action',
         'фильм действия' => 'Action',
         'боевые искусства' => 'Martial arts',
@@ -152,7 +146,7 @@ class Filler extends FillerPlugin
      *
      * @var array
      */
-    private $types = [
+    protected $types = [
         'ТВ' => 'tv',
         'ТВ-спэшл' => 'special',
         'OVA' => 'ova',
@@ -169,7 +163,7 @@ class Filler extends FillerPlugin
      *
      * @var array
      */
-    private $studios = [
+    protected $studios = [
         1 => 'Studio Ghibli',
         3 => 'Gainax',
         4 => 'AIC',
@@ -311,12 +305,13 @@ class Filler extends FillerPlugin
      *
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
-     * @param \Symfony\Component\Validator\Validator\ValidatorInterface $validator
+     * @param \AnimeDb\Bundle\AppBundle\Service\Downloader $downloader
      */
-    public function __construct(Browser $browser, Registry $doctrine, ValidatorInterface $validator) {
+    public function __construct(Browser $browser, Registry $doctrine, Downloader $downloader)
+    {
         $this->browser  = $browser;
         $this->doctrine = $doctrine;
-        $this->validator = $validator;
+        $this->downloader = $downloader;
     }
 
     /**
@@ -324,7 +319,8 @@ class Filler extends FillerPlugin
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return self::NAME;
     }
 
@@ -333,14 +329,15 @@ class Filler extends FillerPlugin
      *
      * @return string
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return self::TITLE;
     }
 
     /**
      * Get form
      *
-     * @return \AnimeDb\Bundle\WorldArtFillerBundle\Form\Filler
+     * @return \AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Filler
      */
     public function getForm()
     {
@@ -414,7 +411,7 @@ class Filler extends FillerPlugin
         }
 
         // add cover
-        $item->setCover($this->getCover($id, $type));
+        $this->setCover($item, $id, $type);
 
         // fill item studio
         if ($studio = $this->getStudio($xpath, $body)) {
@@ -454,7 +451,8 @@ class Filler extends FillerPlugin
      *
      * @return array
      */
-    private function getAttrAsArray(\DOMElement $element) {
+    private function getAttrAsArray(\DOMElement $element)
+    {
         $return = [];
         for ($i = 0; $i < $element->attributes->length; ++$i) {
             $return[$element->attributes->item($i)->nodeName] = $element->attributes->item($i)->nodeValue;
@@ -465,17 +463,16 @@ class Filler extends FillerPlugin
     /**
      * Get cover from source id
      *
+     * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
      * @param string $id
      * @param string $type
      *
-     * @return string|null
+     * @return boolean
      */
-    private function getCover($id, $type) {
-        try {
-            return $this->uploadImage($this->getCoverUrl($id, $type), self::NAME.'/'.$id.'/1.jpg');
-        } catch (\Exception $e) {}
-
-        return null;
+    private function setCover(Item $item, $id, $type)
+    {
+        $item->setCover(self::NAME.'/'.$id.'/1.jpg');
+        return $this->uploadImage($this->getCoverUrl($id, $type), $item);
     }
 
     /**
@@ -487,7 +484,8 @@ class Filler extends FillerPlugin
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
-    private function fillHeadData(Item $item, \DOMXPath $xpath, \DOMElement $head) {
+    private function fillHeadData(Item $item, \DOMXPath $xpath, \DOMElement $head)
+    {
         /* @var $data \DOMElement */
         $data = $xpath->query('font', $head)->item(0);
         $length = $data->childNodes->length;
@@ -602,7 +600,8 @@ class Filler extends FillerPlugin
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
-    private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames, $type) {
+    private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames, $type)
+    {
         for ($i = 0; $i < $body->childNodes->length; $i++) {
             if ($value = trim($body->childNodes->item($i)->nodeValue)) {
                 switch ($value) {
@@ -655,7 +654,7 @@ class Filler extends FillerPlugin
                             ) && $id && $frames
                         ) {
                             foreach ($this->getFrames($id, $type) as $frame) {
-                                $item->addImage((new Image())->setSource($frame));
+                                $item->addImage($frame);
                             }
                         }
                 }
@@ -667,30 +666,13 @@ class Filler extends FillerPlugin
      * Upload image from url
      *
      * @param string $url
-     * @param string|null $target
+     * @param \AnimeDb\Bundle\AppBundle\Service\Downloader\Entity\EntityInterface $entity
      *
-     * @return string
+     * @return boolean
      */
-    public function uploadImage($url, $target = null) {
-        $image = new ImageField();
-        $image->setRemote($url);
-        $image->upload($this->validator, $target);
-        return $image->getPath();
-    }
-
-    /**
-     * Create unique file name
-     *
-     * @param string $path
-     * @param string $ext
-     *
-     * @return string
-     */
-    private function createFileName($path, $ext) {
-        do {
-            $file_name = uniqid();
-        } while (file_exists($path.$file_name.'.'.$ext));
-        return $path.$file_name.'.'.$ext;
+    public function uploadImage($url, EntityInterface $entity)
+    {
+        return $this->downloader->image($url, $this->downloader->getRoot().$entity->getWebPath());
     }
 
     /**
@@ -700,7 +682,8 @@ class Filler extends FillerPlugin
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Country|null
      */
-    private function getCountryByName($name) {
+    private function getCountryByName($name)
+    {
         $name = str_replace('Южная Корея', 'Республика Корея', $name);
         $rep = $this->doctrine->getRepository('AnimeDbCatalogBundle:CountryTranslation');
         if ($country = $rep->findOneBy(['locale' => 'ru', 'content' => $name])) {
@@ -716,7 +699,8 @@ class Filler extends FillerPlugin
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Genre|null
      */
-    private function getGenreByName($name) {
+    private function getGenreByName($name)
+    {
         if (isset($this->genres[$name])) {
             return $this->doctrine
                 ->getRepository('AnimeDbCatalogBundle:Genre')
@@ -732,7 +716,8 @@ class Filler extends FillerPlugin
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Type|null
      */
-    private function getTypeByName($name) {
+    private function getTypeByName($name)
+    {
         if (isset($this->types[$name])) {
             return $this->doctrine
                 ->getRepository('AnimeDbCatalogBundle:Type')
@@ -759,20 +744,23 @@ class Filler extends FillerPlugin
         $frames = [];
         foreach ($images as $image) {
             $src = $this->getAttrAsArray($image)['src'];
+            $entity = new Image();
             if ($type == self::ITEM_TYPE_ANIMATION) {
                 $src = str_replace('optimize_b', 'optimize_d', $src);
                 if (strpos($src, 'http://') === false) {
                     $src = $this->browser->getHost().'/'.$type.'/'.$src;
                 }
-                if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat) &&
-                    $src = $this->uploadImage($src, self::NAME.'/'.$id.'/'.$mat['image'].$mat['ext'])
-                ) {
-                    $frames[] = $src;
+                if (preg_match('/\-(?<image>\d+)\-optimize_d(?<ext>\.jpe?g|png|gif)/', $src, $mat)) {
+                    $entity->setSource(self::NAME.'/'.$id.'/'.$mat['image'].$mat['ext']);
+                    if ($this->uploadImage($src, $entity)) {
+                        $frames[] = $entity;
+                    }
                 }
             } elseif (preg_match('/_(?<round>\d+)\/.+\/(?<id>\d+)-(?<image>\d+)-.+(?<ext>\.jpe?g|png|gif)/', $src, $mat)) {
                 $src = $this->browser->getHost().'/'.$type.'/img/'.$mat['round'].'/'.$mat['id'].'/'.$mat['image'].$mat['ext'];
-                if ($src = $this->uploadImage($src, self::NAME.'/'.$id.'/'.$mat['image'].$mat['ext'])) {
-                    $frames[] = $src;
+                $entity->setSource(self::NAME.'/'.$id.'/'.$mat['image'].$mat['ext']);
+                if ($this->uploadImage($src, $entity)) {
+                    $frames[] = $entity;
                 }
             }
         }

@@ -13,7 +13,7 @@ namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Search as SearchPlugin;
 use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Item as ItemSearch;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use AnimeDb\Bundle\WorldArtFillerBundle\Form\Search as SearchForm;
+use AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Search as SearchForm;
 use Knp\Menu\ItemInterface;
 
 /**
@@ -180,7 +180,7 @@ class Search extends SearchPlugin
     /**
      * Get form
      *
-     * @return \AnimeDb\Bundle\WorldArtFillerBundle\Form\Search
+     * @return \AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Search
      */
     public function getForm()
     {

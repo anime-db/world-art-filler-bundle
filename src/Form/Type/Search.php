@@ -8,15 +8,16 @@
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
  */
 
-namespace AnimeDb\Bundle\WorldArtFillerBundle\Form;
+namespace AnimeDb\Bundle\WorldArtFillerBundle\Form\Type;
 
-use AnimeDb\Bundle\CatalogBundle\Form\Plugin\Search as SearchForm;
+use AnimeDb\Bundle\CatalogBundle\Form\Type\Plugin\Search as SearchForm;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Search from
  *
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Form
+ * @package AnimeDb\Bundle\WorldArtFillerBundle\Form\Type
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
 class Search extends SearchForm
@@ -34,6 +35,17 @@ class Search extends SearchForm
                 'cinema' => 'Cinema'
             ],
             'required' => false
+        ]);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Symfony\Component\Form.AbstractType::setDefaultOptions()
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'csrf_protection' => false
         ]);
     }
 }

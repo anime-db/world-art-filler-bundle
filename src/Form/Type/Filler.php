@@ -8,7 +8,7 @@
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
  */
 
-namespace AnimeDb\Bundle\WorldArtFillerBundle\Form;
+namespace AnimeDb\Bundle\WorldArtFillerBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * Get item from filler
  *
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Form
+ * @package AnimeDb\Bundle\WorldArtFillerBundle\Form\Type
  * @author  Peter Gribanov <info@peter-gribanov.ru>
  */
 class Filler extends AbstractType
@@ -58,6 +58,17 @@ class Filler extends AbstractType
                 'label' => 'Upload frames',
                 'required' => false
             ]);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Symfony\Component\Form.AbstractType::setDefaultOptions()
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'csrf_protection' => false
+        ]);
     }
 
     /**
