@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "801bb741a454516e63475b778718a8ad",
+    "hash": "55f407adc9091ef92e1d5e4e38556a46",
     "packages": [
         {
             "name": "anime-db/ani-db-browser-bundle",
