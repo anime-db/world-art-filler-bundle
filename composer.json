@@ -19,5 +19,11 @@
 		"ext-tidy" : "*",
 		"anime-db/catalog-bundle" : ">=0.4.17"
 	},
-	"minimum-stability" : "dev"
+	"minimum-stability" : "dev",
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "0.1-dev",
+			"dev-develop" : "0.1-dev"
+		}
+	}
 }
