@@ -11,12 +11,6 @@ namespace AnimeDb\Bundle\WorldArtFillerBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-/**
- * Bundle
- *
- * @package AnimeDb\Bundle\WorldArtFillerBundle
- * @author  Peter Gribanov <info@peter-gribanov.ru>
- */
 class AnimeDbWorldArtFillerBundle extends Bundle
 {
 }

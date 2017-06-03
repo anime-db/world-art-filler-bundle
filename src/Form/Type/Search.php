@@ -14,10 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Search from
- *
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Form\Type
- * @author  Peter Gribanov <info@peter-gribanov.ru>
+ * Search from.
  */
 class Search extends SearchForm
 {

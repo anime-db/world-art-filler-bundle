@@ -12,9 +12,6 @@ namespace AnimeDb\Bundle\WorldArtFillerBundle\DoctrineMigrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 class Version20140530120741_CorrectSourceLink extends AbstractMigration
 {
     /**

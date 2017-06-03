@@ -14,10 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Get item from filler
- *
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Form\Type
- * @author  Peter Gribanov <info@peter-gribanov.ru>
+ * Get item from filler.
  */
 class Filler extends AbstractType
 {

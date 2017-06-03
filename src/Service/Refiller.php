@@ -16,13 +16,6 @@ use AnimeDb\Bundle\CatalogBundle\Entity\Source;
 use AnimeDb\Bundle\CatalogBundle\Entity\Image;
 use AnimeDb\Bundle\CatalogBundle\Entity\Name;
 
-/**
- * Refiller from site world-art.ru
- * 
- * @link http://world-art.ru/
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
- * @author  Peter Gribanov <info@peter-gribanov.ru>
- */
 class Refiller extends RefillerPlugin
 {
     /**

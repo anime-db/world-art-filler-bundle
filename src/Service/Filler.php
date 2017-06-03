@@ -20,13 +20,6 @@ use AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Filler as FillerForm;
 use Knp\Menu\ItemInterface;
 use AnimeDb\Bundle\AppBundle\Service\Downloader\Entity\EntityInterface;
 
-/**
- * Filler from site world-art.ru
- * 
- * @link http://world-art.ru/
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
- * @author  Peter Gribanov <info@peter-gribanov.ru>
- */
 class Filler extends FillerPlugin
 {
     /**

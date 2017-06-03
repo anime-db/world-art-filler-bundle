@@ -15,13 +15,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Search as SearchForm;
 use Knp\Menu\ItemInterface;
 
-/**
- * Search from site world-art.ru
- * 
- * @link http://world-art.ru/
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
- * @author  Peter Gribanov <info@peter-gribanov.ru>
- */
 class Search extends SearchPlugin
 {
     /**

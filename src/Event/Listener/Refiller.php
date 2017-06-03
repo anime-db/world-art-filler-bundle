@@ -17,10 +17,7 @@ use AnimeDb\Bundle\CatalogBundle\Event\Storage\StoreEvents;
 use AnimeDb\Bundle\CatalogBundle\Entity\Name;
 
 /**
- * Refiller for new item
- *
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Event\Listener
- * @author  Peter Gribanov <info@peter-gribanov.ru>
+ * Refiller for new item.
  */
 class Refiller
 {

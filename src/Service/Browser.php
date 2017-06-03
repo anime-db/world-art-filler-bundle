@@ -12,13 +12,6 @@ namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 use Symfony\Component\HttpFoundation\Request;
 use Guzzle\Http\Client;
 
-/**
- * Browser
- *
- * @link http://world-art.ru/
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
- * @author  Peter Gribanov <info@peter-gribanov.ru>
- */
 class Browser
 {
     /**

@@ -14,12 +14,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-/**
- * DependencyInjection
- *
- * @package AnimeDb\Bundle\WorldArtFillerBundle\DependencyInjection
- * @author  Peter Gribanov <info@peter-gribanov.ru>
- */
 class AnimeDbWorldArtFillerExtension extends Extension
 {
     /**
