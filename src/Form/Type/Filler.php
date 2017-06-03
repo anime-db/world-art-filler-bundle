@@ -45,12 +45,12 @@ class Filler extends AbstractType
             ->setMethod('GET')
             ->add('url', 'text', [
                 'label' => 'URL address',
-                'attr'  => [
+                'attr' => [
                     'placeholder' => $this->host.'/',
                 ],
             ])
             ->add('frames', 'checkbox', [
-                'label'    => 'Upload frames',
+                'label' => 'Upload frames',
                 'required' => false,
             ]);
     }

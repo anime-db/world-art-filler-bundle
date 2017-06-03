@@ -84,53 +84,53 @@ class Filler extends FillerPlugin
      * @var array
      */
     protected $genres = [
-        'боевик'                => 'Action',
-        'фильм действия'        => 'Action',
-        'боевые искусства'      => 'Martial arts',
-        'вампиры'               => 'Vampire',
-        'война'                 => 'War',
-        'детектив'              => 'Detective',
-        'для детей'             => 'Kids',
-        'дзёсэй'                => 'Josei',
-        'драма'                 => 'Drama',
-        'история'               => 'History',
-        'киберпанк'             => 'Cyberpunk',
-        'комедия'               => 'Comedy',
-        'махо-сёдзё'            => 'Mahoe shoujo',
-        'меха'                  => 'Mecha',
-        'мистерия'              => 'Mystery',
-        'мистика'               => 'Mystery',
-        'музыкальный'           => 'Music',
-        'образовательный'       => 'Educational',
-        'пародия'               => 'Parody',
-        'cтимпанк'              => 'Steampunk',
-        'паропанк'              => 'Steampunk',
-        'повседневность'        => 'Slice of life',
-        'полиция'               => 'Police',
-        'постапокалиптика'      => 'Apocalyptic fiction',
-        'приключения'           => 'Adventure',
+        'боевик' => 'Action',
+        'фильм действия' => 'Action',
+        'боевые искусства' => 'Martial arts',
+        'вампиры' => 'Vampire',
+        'война' => 'War',
+        'детектив' => 'Detective',
+        'для детей' => 'Kids',
+        'дзёсэй' => 'Josei',
+        'драма' => 'Drama',
+        'история' => 'History',
+        'киберпанк' => 'Cyberpunk',
+        'комедия' => 'Comedy',
+        'махо-сёдзё' => 'Mahoe shoujo',
+        'меха' => 'Mecha',
+        'мистерия' => 'Mystery',
+        'мистика' => 'Mystery',
+        'музыкальный' => 'Music',
+        'образовательный' => 'Educational',
+        'пародия' => 'Parody',
+        'cтимпанк' => 'Steampunk',
+        'паропанк' => 'Steampunk',
+        'повседневность' => 'Slice of life',
+        'полиция' => 'Police',
+        'постапокалиптика' => 'Apocalyptic fiction',
+        'приключения' => 'Adventure',
         'приключенческий фильм' => 'Adventure',
-        'психология'            => 'Psychological',
-        'романтика'             => 'Romance',
-        'самурайский боевик'    => 'Samurai',
-        'сёдзё'                 => 'Shoujo',
-        'сёдзё-ай'              => 'Shoujo-ai',
-        'сёнэн'                 => 'Shounen',
-        'сёнэн-ай'              => 'Shounen-ai',
-        'сказка'                => 'Fable',
-        'спорт'                 => 'Sport',
-        'сэйнэн'                => 'Senen',
-        'триллер'               => 'Thriller',
-        'школа'                 => 'School',
-        'фантастика'            => 'Sci-fi',
-        'кинофантазия'          => 'Fantastic',
-        'фэнтези'               => 'Fantasy',
-        'эротика'               => 'Erotica',
-        'этти'                  => 'Ecchi',
-        'ужасы'                 => 'Horror',
-        'хентай'                => 'Hentai',
-        'юри'                   => 'Yuri',
-        'яой'                   => 'Yaoi',
+        'психология' => 'Psychological',
+        'романтика' => 'Romance',
+        'самурайский боевик' => 'Samurai',
+        'сёдзё' => 'Shoujo',
+        'сёдзё-ай' => 'Shoujo-ai',
+        'сёнэн' => 'Shounen',
+        'сёнэн-ай' => 'Shounen-ai',
+        'сказка' => 'Fable',
+        'спорт' => 'Sport',
+        'сэйнэн' => 'Senen',
+        'триллер' => 'Thriller',
+        'школа' => 'School',
+        'фантастика' => 'Sci-fi',
+        'кинофантазия' => 'Fantastic',
+        'фэнтези' => 'Fantasy',
+        'эротика' => 'Erotica',
+        'этти' => 'Ecchi',
+        'ужасы' => 'Horror',
+        'хентай' => 'Hentai',
+        'юри' => 'Yuri',
+        'яой' => 'Yaoi',
     ];
 
     /**
@@ -139,15 +139,15 @@ class Filler extends FillerPlugin
      * @var array
      */
     protected $types = [
-        'ТВ'                     => 'tv',
-        'ТВ-спэшл'               => 'special',
-        'OVA'                    => 'ova',
-        'ONA'                    => 'ona',
-        'OAV'                    => 'ova',
-        'полнометражный фильм'   => 'feature',
+        'ТВ' => 'tv',
+        'ТВ-спэшл' => 'special',
+        'OVA' => 'ova',
+        'ONA' => 'ona',
+        'OAV' => 'ova',
+        'полнометражный фильм' => 'feature',
         'короткометражный фильм' => 'featurette',
-        'музыкальное видео'      => 'music',
-        'рекламный ролик'        => 'commercial',
+        'музыкальное видео' => 'music',
+        'рекламный ролик' => 'commercial',
     ];
 
     /**
@@ -156,37 +156,37 @@ class Filler extends FillerPlugin
      * @var array
      */
     protected $studios = [
-        1   => 'Studio Ghibli',
-        3   => 'Gainax',
-        4   => 'AIC',
-        6   => 'KSS',
-        14  => 'TMS Entertainment',
-        20  => 'Bones',
-        21  => 'Clamp',
-        22  => 'Studio DEEN',
-        24  => 'J.C.Staff',
-        25  => 'Madhouse',
-        26  => 'animate',
-        29  => 'OLM, Inc.',
-        30  => 'Tezuka Productions',
-        31  => 'Production I.G',
-        32  => 'Gonzo',
-        34  => 'Sunrise',
-        37  => 'Agent 21',
-        41  => 'Toei Animation',
-        44  => 'APPP',
-        54  => 'Radix',
-        56  => 'Pierrot',
-        59  => 'XEBEC',
-        64  => 'Satelight',
-        74  => 'Oh! Production',
-        78  => 'Triangle Staff',
-        82  => 'Bee Train',
-        84  => 'Animax',
-        87  => 'Daume',
-        89  => 'Kitty Films',
-        92  => 'Ajia-do',
-        96  => 'Studio 4°C',
+        1 => 'Studio Ghibli',
+        3 => 'Gainax',
+        4 => 'AIC',
+        6 => 'KSS',
+        14 => 'TMS Entertainment',
+        20 => 'Bones',
+        21 => 'Clamp',
+        22 => 'Studio DEEN',
+        24 => 'J.C.Staff',
+        25 => 'Madhouse',
+        26 => 'animate',
+        29 => 'OLM, Inc.',
+        30 => 'Tezuka Productions',
+        31 => 'Production I.G',
+        32 => 'Gonzo',
+        34 => 'Sunrise',
+        37 => 'Agent 21',
+        41 => 'Toei Animation',
+        44 => 'APPP',
+        54 => 'Radix',
+        56 => 'Pierrot',
+        59 => 'XEBEC',
+        64 => 'Satelight',
+        74 => 'Oh! Production',
+        78 => 'Triangle Staff',
+        82 => 'Bee Train',
+        84 => 'Animax',
+        87 => 'Daume',
+        89 => 'Kitty Films',
+        92 => 'Ajia-do',
+        96 => 'Studio 4°C',
         106 => 'CoMix Wave Inc.',
         116 => 'Fox Animation Studios',
         117 => 'Blue Sky Studios',
@@ -204,68 +204,68 @@ class Filler extends FillerPlugin
         236 => 'Pink Pineapple',
         244 => 'Production Reed',
         // reverse links
-        250   => 'Melnitsa Animation Studio',
-        252   => 'Nippon Animation',
-        255   => 'Artland',
-        267   => 'SHAFT',
-        278   => 'March Entertainment',
-        296   => 'Gallop',
-        315   => 'DreamWorks Animation',
-        351   => 'TNK',
-        398   => 'A.C.G.T.',
-        436   => 'Kyoto Animation',
-        439   => 'Studio Comet',
-        463   => 'Magic Bus',
-        639   => 'Industrial Light & Magic',
-        689   => 'ZEXCS',
-        724   => 'Six Point Harness',
-        753   => 'Pentamedia Graphics',
-        795   => 'Rough Draft Studios',
-        802   => 'Shin-Ei Animation',
-        821   => 'Warner Bros. Animation',
-        1066  => 'Animal Logic',
-        1161  => 'Marvel Animation Studios',
-        1168  => 'Klasky Csupo',
-        1654  => 'Digital Frontier',
-        1663  => 'Mac Guff',
-        1689  => 'Manglobe',
-        1778  => 'CinéGroupe',
-        1889  => 'Film Roman, Inc.',
-        1890  => 'AKOM',
-        1901  => 'Brain\'s Base',
-        1961  => 'feel.',
-        2058  => 'Eiken',
-        2229  => 'Studio Hibari',
-        2370  => 'IMAGIN',
-        2379  => 'Folimage',
-        2381  => 'DisneyToon Studios',
-        2491  => 'ufotable',
-        3058  => 'Asahi Production',
-        3096  => 'Mook Animation',
-        3113  => 'Walt Disney Television Animation',
-        3420  => 'Metro-Goldwyn-Mayer Animation',
-        3530  => 'Seven Arcs',
-        3742  => 'Nomad',
-        3748  => 'Dygra Films',
-        3773  => 'Dogakobo',
-        3816  => 'EMation',
-        4013  => 'Toon City',
-        5423  => 'O Entertainment/Omation Animation Studio',
-        6081  => 'Sony Pictures Animation',
-        6474  => 'Wang Film Productions',
-        6475  => 'Creative Capers Entertainment',
-        6701  => 'Arc Productions',
-        7092  => 'Millimages',
-        7194  => 'Mondo TV',
-        7298  => 'A-1 Pictures Inc.',
-        7372  => 'Diomedea',
-        7388  => 'Williams Street Studios',
-        7801  => 'National Film Board of Canada',
-        7933  => 'Titmouse',
-        8590  => 'Rhythm and Hues Studios',
-        8639  => 'Bagdasarian Productions',
-        9298  => 'Toonz',
-        9900  => 'Savage Studios Ltd.',
+        250 => 'Melnitsa Animation Studio',
+        252 => 'Nippon Animation',
+        255 => 'Artland',
+        267 => 'SHAFT',
+        278 => 'March Entertainment',
+        296 => 'Gallop',
+        315 => 'DreamWorks Animation',
+        351 => 'TNK',
+        398 => 'A.C.G.T.',
+        436 => 'Kyoto Animation',
+        439 => 'Studio Comet',
+        463 => 'Magic Bus',
+        639 => 'Industrial Light & Magic',
+        689 => 'ZEXCS',
+        724 => 'Six Point Harness',
+        753 => 'Pentamedia Graphics',
+        795 => 'Rough Draft Studios',
+        802 => 'Shin-Ei Animation',
+        821 => 'Warner Bros. Animation',
+        1066 => 'Animal Logic',
+        1161 => 'Marvel Animation Studios',
+        1168 => 'Klasky Csupo',
+        1654 => 'Digital Frontier',
+        1663 => 'Mac Guff',
+        1689 => 'Manglobe',
+        1778 => 'CinéGroupe',
+        1889 => 'Film Roman, Inc.',
+        1890 => 'AKOM',
+        1901 => 'Brain\'s Base',
+        1961 => 'feel.',
+        2058 => 'Eiken',
+        2229 => 'Studio Hibari',
+        2370 => 'IMAGIN',
+        2379 => 'Folimage',
+        2381 => 'DisneyToon Studios',
+        2491 => 'ufotable',
+        3058 => 'Asahi Production',
+        3096 => 'Mook Animation',
+        3113 => 'Walt Disney Television Animation',
+        3420 => 'Metro-Goldwyn-Mayer Animation',
+        3530 => 'Seven Arcs',
+        3742 => 'Nomad',
+        3748 => 'Dygra Films',
+        3773 => 'Dogakobo',
+        3816 => 'EMation',
+        4013 => 'Toon City',
+        5423 => 'O Entertainment/Omation Animation Studio',
+        6081 => 'Sony Pictures Animation',
+        6474 => 'Wang Film Productions',
+        6475 => 'Creative Capers Entertainment',
+        6701 => 'Arc Productions',
+        7092 => 'Millimages',
+        7194 => 'Mondo TV',
+        7298 => 'A-1 Pictures Inc.',
+        7372 => 'Diomedea',
+        7388 => 'Williams Street Studios',
+        7801 => 'National Film Board of Canada',
+        7933 => 'Titmouse',
+        8590 => 'Rhythm and Hues Studios',
+        8639 => 'Bagdasarian Productions',
+        9298 => 'Toonz',
+        9900 => 'Savage Studios Ltd.',
         10664 => 'A. Film',
         11077 => 'Vanguard Animation',
         11213 => 'bolexbrothers',
@@ -393,7 +393,7 @@ class Filler extends FillerPlugin
         // add other source links
         /* @var $links \DOMNodeList */
         $links = $xpath->query('a', $nodes->item(1));
-        for ($i = 0; $i < $links->length; $i++) {
+        for ($i = 0; $i < $links->length; ++$i) {
             $link = $this->getAttrAsArray($links->item($i));
             if (strpos($link['href'], 'http://') !== false &&
                 strpos($link['href'], $this->browser->getHost()) === false
@@ -484,7 +484,7 @@ class Filler extends FillerPlugin
         /* @var $data \DOMElement */
         $data = $xpath->query('font', $head)->item(0);
         $length = $data->childNodes->length;
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             if ($data->childNodes->item($i)->nodeName == 'b') {
                 switch ($data->childNodes->item($i)->nodeValue) {
                     // set country
@@ -498,7 +498,7 @@ class Filler extends FillerPlugin
                                 }
                                 break;
                             }
-                            $j++;
+                            ++$j;
                         } while ($data->childNodes->item($i + $j)->nodeName != 'br');
                         $i += $j;
                         break;
@@ -511,7 +511,7 @@ class Filler extends FillerPlugin
                             ) {
                                 $item->addGenre($genre);
                             }
-                            $j++;
+                            ++$j;
                         } while ($data->childNodes->item($i + $j)->nodeName != 'br');
                         $i += $j;
                         break;
@@ -544,7 +544,7 @@ class Filler extends FillerPlugin
                                 $item->setFileInfo(($file_info ? $file_info."\n" : '').trim($match['file_info']));
                             }
                         }
-                        $i++;
+                        ++$i;
                         break;
                     // set date premiere and date end if exists
                     case 'Премьера':
@@ -553,7 +553,7 @@ class Filler extends FillerPlugin
                         $date = '';
                         do {
                             $date .= $data->childNodes->item($i + $j)->nodeValue;
-                            $j++;
+                            ++$j;
                         } while ($length > $i + $j && $data->childNodes->item($i + $j)->nodeName != 'br');
                         $i += $j;
 
@@ -597,7 +597,7 @@ class Filler extends FillerPlugin
      */
     private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames, $type)
     {
-        for ($i = 0; $i < $body->childNodes->length; $i++) {
+        for ($i = 0; $i < $body->childNodes->length; ++$i) {
             if ($value = trim($body->childNodes->item($i)->nodeValue)) {
                 switch ($value) {
                     // get summary
@@ -616,7 +616,7 @@ class Filler extends FillerPlugin
                         } else { // episodes in table
                             $rows = $xpath->query('tr/td[2]', $body->childNodes->item($i + 1));
                             $episodes = '';
-                            for ($j = 1; $j < $rows->length; $j++) {
+                            for ($j = 1; $j < $rows->length; ++$j) {
                                 $episode = $xpath->query('font', $rows->item($j));
                                 $episodes .= $j.'. '.$episode->item(0)->nodeValue;
                                 if ($rows->length > 1) {
@@ -625,7 +625,7 @@ class Filler extends FillerPlugin
                                 $episodes .= "\n";
                             }
                             $item->setEpisodes($episodes);
-                            $i++;
+                            ++$i;
                         }
                         break;
                     // get date premiere

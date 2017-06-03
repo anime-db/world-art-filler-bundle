@@ -26,9 +26,9 @@ class Search extends SearchForm
     {
         parent::buildForm($builder, $options);
         $builder->add('type', 'choice', [
-            'choices'  => [
+            'choices' => [
                 'animation' => 'Anime',
-                'cinema'    => 'Cinema',
+                'cinema' => 'Cinema',
             ],
             'required' => false,
         ]);
