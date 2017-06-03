@@ -138,13 +138,13 @@ class Browser
 
         // clean content
         $config = [
-            'output-xhtml'     => true,
-            'indent'           => true,
-            'indent-spaces'    => 0,
-            'fix-backslash'    => true,
-            'hide-comments'    => true,
+            'output-xhtml' => true,
+            'indent' => true,
+            'indent-spaces' => 0,
+            'fix-backslash' => true,
+            'hide-comments' => true,
             'drop-empty-paras' => true,
-            'wrap'             => false,
+            'wrap' => false,
         ];
         $tidy = new \tidy();
         $tidy->parseString($html, $config, 'utf8');
