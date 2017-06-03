@@ -18,16 +18,15 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class Filler extends AbstractType
 {
-
     /**
-     * HTTP host
+     * HTTP host.
      *
      * @var string
      */
     protected $host;
 
     /**
-     * Construct
+     * Construct.
      *
      * @param string $host
      */
@@ -38,7 +37,7 @@ class Filler extends AbstractType
 
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -46,29 +45,31 @@ class Filler extends AbstractType
             ->setMethod('GET')
             ->add('url', 'text', [
                 'label' => 'URL address',
-                'attr' => [
+                'attr'  => [
                     'placeholder' => $this->host.'/',
                 ],
             ])
             ->add('frames', 'checkbox', [
-                'label' => 'Upload frames',
-                'required' => false
+                'label'    => 'Upload frames',
+                'required' => false,
             ]);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see Symfony\Component\Form.AbstractType::setDefaultOptions()
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'csrf_protection' => false
+            'csrf_protection' => false,
         ]);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Symfony\Component\Form\FormTypeInterface::getName()
      */
     public function getName()
