@@ -383,7 +383,7 @@ class Filler extends FillerPlugin
         }
 
         /* @var $body \DOMElement */
-        if (!($body = $nodes->item(4))) {
+        if (!($body = $nodes->item(5))) {
             throw new \LogicException('Incorrect data structure at source');
         }
 
