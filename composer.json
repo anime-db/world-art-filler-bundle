@@ -1,31 +1,31 @@
 {
-	"name" : "anime-db/world-art-filler-bundle",
-	"license" : "GPL-3.0",
-	"type" : "anime-db-plugin",
-	"description" : "Plugin World-Art for the catalog Anime DB",
-	"homepage" : "http://github.com/anime-db/world-art-filler-bundle",
-	"autoload" : {
-		"psr-4" : {
-			"AnimeDb\\Bundle\\WorldArtFillerBundle\\" : "src/"
-		}
-	},
-	"autoload-dev" : {
-		"psr-4" : {
-			"AnimeDb\\Bundle\\WorldArtFillerBundle\\Tests\\" : "tests/"
-		}
-	},
-	"require" : {
-		"php" : ">=5.4.0",
-		"ext-tidy" : "*"
-	},
-	"require-dev" : {
-		"anime-db/catalog-bundle" : ">=0.4.17"
-	},
-	"minimum-stability" : "dev",
-	"extra" : {
-		"branch-alias" : {
-			"dev-master" : "0.1-dev",
-			"dev-develop" : "0.1-dev"
-		}
-	}
+    "name" : "anime-db/world-art-filler-bundle",
+    "license" : "GPL-3.0",
+    "type" : "anime-db-plugin",
+    "description" : "Plugin World-Art for the catalog Anime DB",
+    "homepage" : "http://github.com/anime-db/world-art-filler-bundle",
+    "autoload" : {
+        "psr-4" : {
+            "AnimeDb\\Bundle\\WorldArtFillerBundle\\" : "src/"
+        }
+    },
+    "autoload-dev" : {
+        "psr-4" : {
+            "AnimeDb\\Bundle\\WorldArtFillerBundle\\Tests\\" : "tests/"
+        }
+    },
+    "require" : {
+        "php" : ">=5.4.0",
+        "ext-tidy" : "*"
+    },
+    "require-dev" : {
+        "anime-db/catalog-bundle" : ">=0.4.17"
+    },
+    "minimum-stability" : "dev",
+    "extra" : {
+        "branch-alias" : {
+            "dev-master" : "0.1-dev",
+            "dev-develop" : "0.1-dev"
+        }
+    }
 }
