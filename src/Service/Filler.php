@@ -1,8 +1,7 @@
 <?php
 /**
- * AnimeDb package
+ * AnimeDb package.
  *
- * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
@@ -10,84 +9,77 @@
 
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Filler\Filler as FillerPlugin;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use AnimeDb\Bundle\CatalogBundle\Entity\Item;
-use AnimeDb\Bundle\CatalogBundle\Entity\Source;
-use AnimeDb\Bundle\CatalogBundle\Entity\Name;
-use AnimeDb\Bundle\CatalogBundle\Entity\Image;
 use AnimeDb\Bundle\AppBundle\Service\Downloader;
-use AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Filler as FillerForm;
-use Knp\Menu\ItemInterface;
 use AnimeDb\Bundle\AppBundle\Service\Downloader\Entity\EntityInterface;
+use AnimeDb\Bundle\CatalogBundle\Entity\Image;
+use AnimeDb\Bundle\CatalogBundle\Entity\Item;
+use AnimeDb\Bundle\CatalogBundle\Entity\Name;
+use AnimeDb\Bundle\CatalogBundle\Entity\Source;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Filler\Filler as FillerPlugin;
+use AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Filler as FillerForm;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Knp\Menu\ItemInterface;
 
-/**
- * Filler from site world-art.ru
- * 
- * @link http://world-art.ru/
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
- * @author  Peter Gribanov <info@peter-gribanov.ru>
- */
 class Filler extends FillerPlugin
 {
     /**
-     * Name
+     * Name.
      *
      * @var string
      */
     const NAME = 'world-art';
 
     /**
-     * Title
+     * Title.
      *
      * @var string
      */
     const TITLE = 'World-Art.ru';
 
     /**
-     * XPath for fill item
+     * XPath for fill item.
      *
      * @var string
      */
     const XPATH_FOR_FILL = '//center/table[@height="58%"]/tr/td/table[1]/tr/td';
 
     /**
-     * Item type animation
+     * Item type animation.
      *
      * @var string
      */
     const ITEM_TYPE_ANIMATION = 'animation';
 
     /**
-     * Item type cinema
+     * Item type cinema.
      *
      * @var string
      */
     const ITEM_TYPE_CINEMA = 'cinema';
 
     /**
-     * Browser
+     * Browser.
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
      */
     protected $browser;
 
     /**
-     * Doctrine
+     * Doctrine.
      *
      * @var \Doctrine\Bundle\DoctrineBundle\Registry
      */
     protected $doctrine;
 
     /**
-     * Downloader
+     * Downloader.
      *
      * @var \AnimeDb\Bundle\AppBundle\Service\Downloader
      */
     protected $downloader;
 
     /**
-     * World-Art genres
+     * World-Art genres.
      *
      * @var array
      */
@@ -142,7 +134,7 @@ class Filler extends FillerPlugin
     ];
 
     /**
-     * World-Art types
+     * World-Art types.
      *
      * @var array
      */
@@ -159,7 +151,7 @@ class Filler extends FillerPlugin
     ];
 
     /**
-     * World-Art studios
+     * World-Art studios.
      *
      * @var array
      */
@@ -170,11 +162,11 @@ class Filler extends FillerPlugin
         6 => 'KSS',
         14 => 'TMS Entertainment',
         20 => 'Bones',
-        21  => 'Clamp',
+        21 => 'Clamp',
         22 => 'Studio DEEN',
         24 => 'J.C.Staff',
         25 => 'Madhouse',
-        26  => 'animate',
+        26 => 'animate',
         29 => 'OLM, Inc.',
         30 => 'Tezuka Productions',
         31 => 'Production I.G',
@@ -192,8 +184,8 @@ class Filler extends FillerPlugin
         82 => 'Bee Train',
         84 => 'Animax',
         87 => 'Daume',
-        87 => 'Ajia-do',
         89 => 'Kitty Films',
+        92 => 'Ajia-do',
         96 => 'Studio 4°C',
         106 => 'CoMix Wave Inc.',
         116 => 'Fox Animation Studios',
@@ -301,21 +293,21 @@ class Filler extends FillerPlugin
     ];
 
     /**
-     * Construct
+     * Construct.
      *
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
-     * @param \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
-     * @param \AnimeDb\Bundle\AppBundle\Service\Downloader $downloader
+     * @param \Doctrine\Bundle\DoctrineBundle\Registry             $doctrine
+     * @param \AnimeDb\Bundle\AppBundle\Service\Downloader         $downloader
      */
     public function __construct(Browser $browser, Registry $doctrine, Downloader $downloader)
     {
-        $this->browser  = $browser;
+        $this->browser = $browser;
         $this->doctrine = $doctrine;
         $this->downloader = $downloader;
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -325,7 +317,7 @@ class Filler extends FillerPlugin
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -335,7 +327,7 @@ class Filler extends FillerPlugin
     }
 
     /**
-     * Get form
+     * Get form.
      *
      * @return \AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Filler
      */
@@ -345,7 +337,7 @@ class Filler extends FillerPlugin
     }
 
     /**
-     * Build menu for plugin
+     * Build menu for plugin.
      *
      * @param \Knp\Menu\ItemInterface $item
      *
@@ -358,39 +350,39 @@ class Filler extends FillerPlugin
     }
 
     /**
-     * Fill item from source
+     * Fill item from source.
      *
-     * @param array $date
+     * @param array $data
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item|null
      */
     public function fill(array $data)
     {
         if (empty($data['url']) || !is_string($data['url']) || strpos($data['url'], $this->browser->getHost()) !== 0) {
-            return null;
+            return;
         }
 
         $dom = $this->browser->getDom(substr($data['url'], strlen($this->browser->getHost())));
         if (!($dom instanceof \DOMDocument)) {
-            return null;
+            return;
         }
         $xpath = new \DOMXPath($dom);
         $nodes = $xpath->query(self::XPATH_FOR_FILL);
 
         // get item type
         if (!($type = $this->getItemType($data['url']))) {
-            return null;
+            return;
         }
 
         /* @var $body \DOMElement */
-        if (!($body = $nodes->item(4))) {
+        if (!($body = $nodes->item(5))) {
             throw new \LogicException('Incorrect data structure at source');
         }
 
         // item id from source
         $id = 0;
         if (preg_match('/id=(?<id>\d+)/', $data['url'], $mat)) {
-            $id = (int)$mat['id'];
+            $id = (int) $mat['id'];
         }
 
         $item = new Item();
@@ -401,7 +393,7 @@ class Filler extends FillerPlugin
         // add other source links
         /* @var $links \DOMNodeList */
         $links = $xpath->query('a', $nodes->item(1));
-        for ($i = 0; $i < $links->length; $i++) {
+        for ($i = 0; $i < $links->length; ++$i) {
             $link = $this->getAttrAsArray($links->item($i));
             if (strpos($link['href'], 'http://') !== false &&
                 strpos($link['href'], $this->browser->getHost()) === false
@@ -441,11 +433,12 @@ class Filler extends FillerPlugin
 
         // fill body data
         $this->fillBodyData($item, $xpath, $body, $id, !empty($data['frames']), $type);
+
         return $item;
     }
 
     /**
-     * Get element attributes as array
+     * Get element attributes as array.
      *
      * @param \DOMElement $element
      *
@@ -457,30 +450,32 @@ class Filler extends FillerPlugin
         for ($i = 0; $i < $element->attributes->length; ++$i) {
             $return[$element->attributes->item($i)->nodeName] = $element->attributes->item($i)->nodeValue;
         }
+
         return $return;
     }
 
     /**
-     * Get cover from source id
+     * Get cover from source id.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
-     * @param string $id
-     * @param string $type
+     * @param string                                    $id
+     * @param string                                    $type
      *
-     * @return boolean
+     * @return bool
      */
     private function setCover(Item $item, $id, $type)
     {
         $item->setCover(self::NAME.'/'.$id.'/1.jpg');
+
         return $this->uploadImage($this->getCoverUrl($id, $type), $item);
     }
 
     /**
-     * Fill head data
+     * Fill head data.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
-     * @param \DOMXPath $xpath
-     * @param \DOMElement $head
+     * @param \DOMXPath                                 $xpath
+     * @param \DOMElement                               $head
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
@@ -489,40 +484,40 @@ class Filler extends FillerPlugin
         /* @var $data \DOMElement */
         $data = $xpath->query('font', $head)->item(0);
         $length = $data->childNodes->length;
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             if ($data->childNodes->item($i)->nodeName == 'b') {
                 switch ($data->childNodes->item($i)->nodeValue) {
                     // set country
                     case 'Производство':
                         $j = 1;
                         do {
-                            if ($data->childNodes->item($i+$j)->nodeName == 'a') {
-                                $country_name = trim($data->childNodes->item($i+$j)->nodeValue);
+                            if ($data->childNodes->item($i + $j)->nodeName == 'a') {
+                                $country_name = trim($data->childNodes->item($i + $j)->nodeValue);
                                 if ($country_name && $country = $this->getCountryByName($country_name)) {
                                     $item->setCountry($country);
                                 }
                                 break;
                             }
-                            $j++;
-                        } while ($data->childNodes->item($i+$j)->nodeName != 'br');
+                            ++$j;
+                        } while ($data->childNodes->item($i + $j)->nodeName != 'br');
                         $i += $j;
                         break;
                     // add genre
                     case 'Жанр':
                         $j = 2;
                         do {
-                            if ($data->childNodes->item($i+$j)->nodeName == 'a' &&
-                                ($genre = $this->getGenreByName($data->childNodes->item($i+$j)->nodeValue))
+                            if ($data->childNodes->item($i + $j)->nodeName == 'a' &&
+                                ($genre = $this->getGenreByName($data->childNodes->item($i + $j)->nodeValue))
                             ) {
                                 $item->addGenre($genre);
                             }
-                            $j++;
-                        } while ($data->childNodes->item($i+$j)->nodeName != 'br');
+                            ++$j;
+                        } while ($data->childNodes->item($i + $j)->nodeName != 'br');
                         $i += $j;
                         break;
                     // set type and add file info
                     case 'Тип':
-                        $type = $data->childNodes->item($i+1)->nodeValue;
+                        $type = $data->childNodes->item($i + 1)->nodeValue;
                         if (preg_match('/(?<type>[\w\s]+)(?: \((?:(?<episodes_number>>?\d+) эп.)?(?<file_info>.*)\))?(, (?<duration>\d{1,3}) мин\.)?$/u', $type, $match)) {
                             // add type
                             if ($type = $this->getTypeByName(trim($match['type']))) {
@@ -530,14 +525,14 @@ class Filler extends FillerPlugin
                             }
                             // add duration
                             if (!empty($match['duration'])) {
-                                $item->setDuration((int)$match['duration']);
+                                $item->setDuration((int) $match['duration']);
                             }
                             // add number of episodes
                             if (!empty($match['episodes_number'])) {
                                 if ($match['episodes_number'][0] == '>') {
                                     $item->setEpisodesNumber(substr($match['episodes_number'], 1).'+');
                                 } else {
-                                    $item->setEpisodesNumber((int)$match['episodes_number']);
+                                    $item->setEpisodesNumber((int) $match['episodes_number']);
                                 }
                             } elseif ($item->getType()->getId() != 'tv') {
                                 // everything except the TV series consist of a single episode
@@ -549,7 +544,7 @@ class Filler extends FillerPlugin
                                 $item->setFileInfo(($file_info ? $file_info."\n" : '').trim($match['file_info']));
                             }
                         }
-                        $i++;
+                        ++$i;
                         break;
                     // set date premiere and date end if exists
                     case 'Премьера':
@@ -557,9 +552,9 @@ class Filler extends FillerPlugin
                         $j = 1;
                         $date = '';
                         do {
-                            $date .= $data->childNodes->item($i+$j)->nodeValue;
-                            $j++;
-                        } while ($length > $i+$j && $data->childNodes->item($i+$j)->nodeName != 'br');
+                            $date .= $data->childNodes->item($i + $j)->nodeValue;
+                            ++$j;
+                        } while ($length > $i + $j && $data->childNodes->item($i + $j)->nodeName != 'br');
                         $i += $j;
 
                         $reg = '/(?<start>(?:(?:\d{2})|(?:\?\?)).\d{2}.\d{4})'.
@@ -572,12 +567,12 @@ class Filler extends FillerPlugin
                         }
                         break;
                     case 'Хронометраж':
-                        if (preg_match('/(?<duration>\d+)/', $data->childNodes->item($i+1)->nodeValue, $match)) {
-                            $item->setDuration((int)$match['duration']);
+                        if (preg_match('/(?<duration>\d+)/', $data->childNodes->item($i + 1)->nodeValue, $match)) {
+                            $item->setDuration((int) $match['duration']);
                         }
                         break;
                     case 'Кол-во серий':
-                        $number = trim($data->childNodes->item($i+1)->nodeValue, ' :');
+                        $number = trim($data->childNodes->item($i + 1)->nodeValue, ' :');
                         if (strpos($number, '>') !== false) {
                             $number = str_replace('>', '', $number).'+';
                         }
@@ -589,25 +584,25 @@ class Filler extends FillerPlugin
     }
 
     /**
-     * Fill body data
+     * Fill body data.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
-     * @param \DOMXPath $xpath
-     * @param \DOMElement $body
-     * @param integer $id
-     * @param boolean $frames
-     * @param string $type
+     * @param \DOMXPath                                 $xpath
+     * @param \DOMElement                               $body
+     * @param int                                       $id
+     * @param bool                                      $frames
+     * @param string                                    $type
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
     private function fillBodyData(Item $item, \DOMXPath $xpath, \DOMElement $body, $id, $frames, $type)
     {
-        for ($i = 0; $i < $body->childNodes->length; $i++) {
+        for ($i = 0; $i < $body->childNodes->length; ++$i) {
             if ($value = trim($body->childNodes->item($i)->nodeValue)) {
                 switch ($value) {
                     // get summary
                     case 'Краткое содержание:':
-                        $summary = $xpath->query('tr/td/p[1]', $body->childNodes->item($i+2));
+                        $summary = $xpath->query('tr/td/p[1]', $body->childNodes->item($i + 2));
                         if ($summary->length) {
                             $item->setSummary($this->getNodeValueAsText($summary->item(0)));
                         }
@@ -615,13 +610,13 @@ class Filler extends FillerPlugin
                         break;
                     // get episodes
                     case 'Эпизоды:':
-                        if (!trim($body->childNodes->item($i+1)->nodeValue)) { // simple list
-                            $item->setEpisodes($this->getNodeValueAsText($body->childNodes->item($i+2)));
+                        if (!trim($body->childNodes->item($i + 1)->nodeValue)) { // simple list
+                            $item->setEpisodes($this->getNodeValueAsText($body->childNodes->item($i + 2)));
                             $i += 2;
                         } else { // episodes in table
-                            $rows = $xpath->query('tr/td[2]', $body->childNodes->item($i+1));
+                            $rows = $xpath->query('tr/td[2]', $body->childNodes->item($i + 1));
                             $episodes = '';
-                            for ($j = 1; $j < $rows->length; $j++) {
+                            for ($j = 1; $j < $rows->length; ++$j) {
                                 $episode = $xpath->query('font', $rows->item($j));
                                 $episodes .= $j.'. '.$episode->item(0)->nodeValue;
                                 if ($rows->length > 1) {
@@ -630,12 +625,12 @@ class Filler extends FillerPlugin
                                 $episodes .= "\n";
                             }
                             $item->setEpisodes($episodes);
-                            $i++;
+                            ++$i;
                         }
                         break;
                     // get date premiere
                     case 'Даты премьер и релизов':
-                        $rows = $xpath->query('tr/td/table/tr/td[3]', $body->childNodes->item($i+1));
+                        $rows = $xpath->query('tr/td/table/tr/td[3]', $body->childNodes->item($i + 1));
                         foreach ($rows as $row) {
                             if (preg_match('/\d{4}\.\d{2}\.\d{2}/', $row->nodeValue, $match)) {
                                 $date = new \DateTime(str_replace('.', '-', $match[0]));
@@ -663,12 +658,12 @@ class Filler extends FillerPlugin
     }
 
     /**
-     * Upload image from url
+     * Upload image from url.
      *
-     * @param string $url
+     * @param string                                                              $url
      * @param \AnimeDb\Bundle\AppBundle\Service\Downloader\Entity\EntityInterface $entity
      *
-     * @return boolean
+     * @return bool
      */
     public function uploadImage($url, EntityInterface $entity)
     {
@@ -676,9 +671,9 @@ class Filler extends FillerPlugin
     }
 
     /**
-     * Get real country by name
+     * Get real country by name.
      *
-     * @param integer $id
+     * @param string $name
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Country|null
      */
@@ -689,11 +684,10 @@ class Filler extends FillerPlugin
         if ($country = $rep->findOneBy(['locale' => 'ru', 'content' => $name])) {
             return $country->getObject();
         }
-        return null;
     }
 
     /**
-     * Get real genre by name
+     * Get real genre by name.
      *
      * @param string $name
      *
@@ -706,11 +700,10 @@ class Filler extends FillerPlugin
                 ->getRepository('AnimeDbCatalogBundle:Genre')
                 ->findOneByName($this->genres[$name]);
         }
-        return null;
     }
 
     /**
-     * Get real type by name
+     * Get real type by name.
      *
      * @param string $name
      *
@@ -723,13 +716,12 @@ class Filler extends FillerPlugin
                 ->getRepository('AnimeDbCatalogBundle:Type')
                 ->find($this->types[$name]);
         }
-        return null;
     }
 
     /**
-     * Get item frames
+     * Get item frames.
      *
-     * @param integer $id
+     * @param int    $id
      * @param string $type
      *
      * @return array
@@ -764,11 +756,12 @@ class Filler extends FillerPlugin
                 }
             }
         }
+
         return $frames;
     }
 
     /**
-     * Get node value as text
+     * Get node value as text.
      *
      * @param \DOMNode $node
      *
@@ -778,14 +771,15 @@ class Filler extends FillerPlugin
     {
         $text = $node->ownerDocument->saveHTML($node);
         $text = str_replace(["<br>\n", "\n", '<br>'], ['<br>', ' ', "\n"], $text);
+
         return trim(strip_tags($text));
     }
 
     /**
-     * Get item studio
+     * Get item studio.
      *
      * @param \DOMXPath $xpath
-     * @param \DOMNode $body
+     * @param \DOMNode  $body
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Studio|null
      */
@@ -805,7 +799,7 @@ class Filler extends FillerPlugin
     }
 
     /**
-     * Get item type by URL
+     * Get item type by URL.
      *
      * @param string $url
      *
@@ -818,16 +812,16 @@ class Filler extends FillerPlugin
         } elseif (strpos($url, self::ITEM_TYPE_CINEMA.'/'.self::ITEM_TYPE_CINEMA) !== false) {
             return self::ITEM_TYPE_CINEMA;
         } else {
-            return null;
+            return;
         }
     }
 
     /**
-     * Fill names for Animation type
+     * Fill names for Animation type.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
-     * @param \DOMXPath $xpath
-     * @param \DOMElement $head
+     * @param \DOMXPath                                 $xpath
+     * @param \DOMElement                               $head
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
@@ -841,6 +835,7 @@ class Filler extends FillerPlugin
         $name = preg_replace('/\[\d{4}\]/', '', array_shift($names)); // example: [2011]
         $name = preg_replace('/\[?(ТВ|OVA|ONA)(\-\d)?\]?/', '', $name); // example: [TV-1]
         $name = preg_replace('/\(фильм \w+\)/u', '', $name); // example: (фильм седьмой)
+        $name = preg_replace('/ - Фильм$/iu', '', $name); // example: - Фильм
         $item->setName(trim($name));
 
         // add other names
@@ -848,15 +843,16 @@ class Filler extends FillerPlugin
             $name = trim(preg_replace('/(\(\d+\))?/', '', $name));
             $item->addName((new Name())->setName($name));
         }
+
         return $item;
     }
 
     /**
-     * Fill names for Cinema type
+     * Fill names for Cinema type.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
-     * @param \DOMXPath $xpath
-     * @param \DOMElement $head
+     * @param \DOMXPath                                 $xpath
+     * @param \DOMElement                               $head
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
@@ -879,11 +875,12 @@ class Filler extends FillerPlugin
             $name = trim(preg_replace('/(\(\d+\))/', '', $name));
             $item->addName((new Name())->setName($name));
         }
+
         return $item;
     }
 
     /**
-     * Get cover URL
+     * Get cover URL.
      *
      * @param string $id
      * @param string $type
@@ -894,20 +891,20 @@ class Filler extends FillerPlugin
     {
         switch ($type) {
             case self::ITEM_TYPE_ANIMATION:
-                return $this->browser->getHost().'/'.$type.'/img/'.(ceil($id/1000)*1000).'/'.$id.'/1.jpg';
+                return $this->browser->getHost().'/'.$type.'/img/'.(ceil($id / 1000) * 1000).'/'.$id.'/1.jpg';
             case self::ITEM_TYPE_CINEMA:
-                return $this->browser->getHost().'/'.$type.'/img/'.(ceil($id/10000)*10000).'/'.$id.'/1.jpg';
+                return $this->browser->getHost().'/'.$type.'/img/'.(ceil($id / 10000) * 10000).'/'.$id.'/1.jpg';
             default:
-                return null;
+                return;
         }
     }
 
     /**
-     * Is supported URL
+     * Is supported URL.
      *
      * @param string $url
      *
-     * @return boolean
+     * @return bool
      */
     public function isSupportedUrl($url)
     {

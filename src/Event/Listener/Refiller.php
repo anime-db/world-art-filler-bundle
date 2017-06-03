@@ -1,8 +1,7 @@
 <?php
 /**
- * AnimeDb package
+ * AnimeDb package.
  *
- * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
@@ -10,48 +9,45 @@
 
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Event\Listener;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use AnimeDb\Bundle\WorldArtFillerBundle\Service\Refiller as RefillerService;
-use AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler;
+use AnimeDb\Bundle\CatalogBundle\Entity\Name;
 use AnimeDb\Bundle\CatalogBundle\Event\Storage\AddNewItem;
 use AnimeDb\Bundle\CatalogBundle\Event\Storage\StoreEvents;
-use AnimeDb\Bundle\CatalogBundle\Entity\Name;
+use AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler;
+use AnimeDb\Bundle\WorldArtFillerBundle\Service\Refiller as RefillerService;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Refiller for new item
- *
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Event\Listener
- * @author  Peter Gribanov <info@peter-gribanov.ru>
+ * Refiller for new item.
  */
 class Refiller
 {
     /**
-     * Refiller
+     * Refiller.
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Refiller
      */
     protected $refiller;
 
     /**
-     * Filler
+     * Filler.
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler
      */
     protected $filler;
 
     /**
-     * Dispatcher
+     * Dispatcher.
      *
      * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
     protected $dispatcher;
 
     /**
-     * Construct
+     * Construct.
      *
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
-     * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Refiller $refiller
-     * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler $filler
+     * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Refiller       $refiller
+     * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler         $filler
      */
     public function __construct(EventDispatcherInterface $dispatcher, RefillerService $refiller, Filler $filler)
     {
@@ -61,7 +57,7 @@ class Refiller
     }
 
     /**
-     * On add new item
+     * On add new item.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Event\Storage\AddNewItem $event
      */

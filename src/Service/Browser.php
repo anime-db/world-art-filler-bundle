@@ -1,8 +1,7 @@
 <?php
 /**
- * AnimeDb package
+ * AnimeDb package.
  *
- * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
@@ -10,66 +9,59 @@
 
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
-use Symfony\Component\HttpFoundation\Request;
 use Guzzle\Http\Client;
+use Symfony\Component\HttpFoundation\Request;
 
-/**
- * Browser
- *
- * @link http://world-art.ru/
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
- * @author  Peter Gribanov <info@peter-gribanov.ru>
- */
 class Browser
 {
     /**
-     * Default HTTP User-Agent
+     * Default HTTP User-Agent.
      *
      * @var string
      */
     const DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36';
 
     /**
-     * Browser
+     * Browser.
      *
      * @var \Guzzle\Http\Client
      */
     protected $browser;
 
     /**
-     * Request
+     * Request.
      *
      * @var \Symfony\Component\HttpFoundation\Request
      */
     protected $request;
 
     /**
-     * HTTP host
+     * HTTP host.
      *
      * @var string
      */
     protected $host;
 
     /**
-     * Browser timeout
+     * Browser timeout.
      *
-     * @var integer
+     * @var int
      */
     protected $timeout;
 
     /**
-     * Browser proxy list
+     * Browser proxy list.
      *
      * @var array
      */
     protected $proxy_list;
 
     /**
-     * Construct
+     * Construct.
      *
      * @param string $host
-     * @param integer $timeout
-     * @param array $proxy_list
+     * @param int    $timeout
+     * @param array  $proxy_list
      */
     public function __construct($host, $timeout, array $proxy_list)
     {
@@ -79,7 +71,7 @@ class Browser
     }
 
     /**
-     * Get host
+     * Get host.
      *
      * @return string
      */
@@ -89,7 +81,7 @@ class Browser
     }
 
     /**
-     * Set request
+     * Set request.
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      */
@@ -99,13 +91,13 @@ class Browser
         // try to set User-Agent from original request
         if ($request && $this->browser) {
             $this->browser->setDefaultHeaders([
-                'User-Agent' => $request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT)
+                'User-Agent' => $request->server->get('HTTP_USER_AGENT', self::DEFAULT_USER_AGENT),
             ]);
         }
     }
 
     /**
-     * Get DOMDocument from path
+     * Get DOMDocument from path.
      *
      * Receive content from the URL, cleaning using Tidy and creating DOM document
      *
@@ -119,12 +111,12 @@ class Browser
         if (($content = $this->getContent($path)) && $dom->loadHTML($content)) {
             return $dom;
         } else {
-            return null;
+            return;
         }
     }
 
     /**
-     * Get content from path
+     * Get content from path.
      *
      * Receive content from the URL and cleaning using Tidy
      *
@@ -140,7 +132,7 @@ class Browser
             throw new \RuntimeException('Failed to query the server '.$this->host);
         }
         if ($response->getStatusCode() !== 200 || !($html = $response->getBody(true))) {
-            return null;
+            return;
         }
         $html = iconv('windows-1251', 'utf-8', $html);
 
@@ -152,7 +144,7 @@ class Browser
             'fix-backslash' => true,
             'hide-comments' => true,
             'drop-empty-paras' => true,
-            'wrap' => false
+            'wrap' => false,
         ];
         $tidy = new \tidy();
         $tidy->parseString($html, $config, 'utf8');
@@ -166,7 +158,7 @@ class Browser
     }
 
     /**
-     * Get HTTP browser
+     * Get HTTP browser.
      *
      * @param \Guzzle\Http\Client
      */
@@ -188,6 +180,7 @@ class Browser
                 $this->browser->setDefaultOption('proxy', $this->proxy_list[array_rand($this->proxy_list)]);
             }
         }
+
         return $this->browser;
     }
 }

@@ -1,8 +1,7 @@
 <?php
 /**
- * AnimeDb package
+ * AnimeDb package.
  *
- * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
@@ -10,92 +9,88 @@
 
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Search as SearchPlugin;
 use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Item as ItemSearch;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Search\Search as SearchPlugin;
 use AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Search as SearchForm;
 use Knp\Menu\ItemInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * Search from site world-art.ru
- * 
- * @link http://world-art.ru/
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
- * @author  Peter Gribanov <info@peter-gribanov.ru>
- */
 class Search extends SearchPlugin
 {
     /**
-     * Name
+     * Name.
      *
      * @var string
      */
     const NAME = 'world-art';
 
     /**
-     * Title
+     * Title.
      *
      * @var string
      */
     const TITLE = 'World-Art.ru';
 
     /**
-     * Path for search
+     * Path for search.
      *
      * @var string
      */
     const SEARH_URL = '/search.php?public_search=#NAME#&global_sector=#SECTOR#';
 
     /**
-     * XPath for list search items
+     * XPath for list search items.
      *
      * @var string
      */
     const XPATH_FOR_LIST = '//center/table/tr/td/table/tr/td/table/tr/td';
 
     /**
-     * Default sector
+     * Default sector.
      *
      * @var string
      */
     const DEFAULT_SECTOR = 'all';
 
     /**
-     * Browser
+     * Browser.
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
      */
     private $browser;
 
     /**
-     * Construct
+     * Construct.
      *
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
      */
-    public function __construct(Browser $browser) {
+    public function __construct(Browser $browser)
+    {
         $this->browser = $browser;
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return self::NAME;
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return self::TITLE;
     }
 
     /**
-     * Build menu for plugin
+     * Build menu for plugin.
      *
      * @param \Knp\Menu\ItemInterface $item
      *
@@ -108,7 +103,7 @@ class Search extends SearchPlugin
     }
 
     /**
-     * Search source by name
+     * Search source by name.
      *
      * Return structure
      * <code>
@@ -142,13 +137,14 @@ class Search extends SearchPlugin
             if (!preg_match('/id=(?<id>\d+)/', $url, $mat) || !($type = $this->filler->getItemType($url))) {
                 throw new NotFoundHttpException('Incorrect URL for found item');
             }
+
             return [
                 new ItemSearch(
                     $name,
                     $this->getLinkForFill($url),
                     $this->filler->getCoverUrl($mat['id'], $type),
                     ''
-                )
+                ),
             ];
         }
 
@@ -178,7 +174,7 @@ class Search extends SearchPlugin
     }
 
     /**
-     * Get form
+     * Get form.
      *
      * @return \AnimeDb\Bundle\WorldArtFillerBundle\Form\Type\Search
      */

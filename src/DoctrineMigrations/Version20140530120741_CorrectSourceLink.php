@@ -1,8 +1,7 @@
 <?php
 /**
- * AnimeDb package
+ * AnimeDb package.
  *
- * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
@@ -13,14 +12,10 @@ namespace AnimeDb\Bundle\WorldArtFillerBundle\DoctrineMigrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 class Version20140530120741_CorrectSourceLink extends AbstractMigration
 {
     /**
-     * (non-PHPdoc)
-     * @see \Doctrine\DBAL\Migrations\AbstractMigration::up()
+     * @param Schema $schema
      */
     public function up(Schema $schema)
     {
@@ -43,8 +38,7 @@ class Version20140530120741_CorrectSourceLink extends AbstractMigration
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \Doctrine\DBAL\Migrations\AbstractMigration::down()
+     * @param Schema $schema
      */
     public function down(Schema $schema)
     {

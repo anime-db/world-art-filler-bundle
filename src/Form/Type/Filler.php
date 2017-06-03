@@ -1,8 +1,7 @@
 <?php
 /**
- * AnimeDb package
+ * AnimeDb package.
  *
- * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
@@ -15,23 +14,19 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Get item from filler
- *
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Form\Type
- * @author  Peter Gribanov <info@peter-gribanov.ru>
+ * Get item from filler.
  */
 class Filler extends AbstractType
 {
-
     /**
-     * HTTP host
+     * HTTP host.
      *
      * @var string
      */
     protected $host;
 
     /**
-     * Construct
+     * Construct.
      *
      * @param string $host
      */
@@ -41,8 +36,8 @@ class Filler extends AbstractType
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \Symfony\Component\Form\AbstractType::buildForm()
+     * @param FormBuilderInterface $builder
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -56,23 +51,25 @@ class Filler extends AbstractType
             ])
             ->add('frames', 'checkbox', [
                 'label' => 'Upload frames',
-                'required' => false
+                'required' => false,
             ]);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see Symfony\Component\Form.AbstractType::setDefaultOptions()
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'csrf_protection' => false
+            'csrf_protection' => false,
         ]);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Symfony\Component\Form\FormTypeInterface::getName()
      */
     public function getName()

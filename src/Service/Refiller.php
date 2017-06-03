@@ -1,8 +1,7 @@
 <?php
 /**
- * AnimeDb package
+ * AnimeDb package.
  *
- * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
@@ -10,38 +9,31 @@
 
 namespace AnimeDb\Bundle\WorldArtFillerBundle\Service;
 
-use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Refiller\Refiller as RefillerPlugin;
-use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Refiller\Item as ItemRefiller;
-use AnimeDb\Bundle\CatalogBundle\Entity\Item;
-use AnimeDb\Bundle\CatalogBundle\Entity\Source;
 use AnimeDb\Bundle\CatalogBundle\Entity\Image;
+use AnimeDb\Bundle\CatalogBundle\Entity\Item;
 use AnimeDb\Bundle\CatalogBundle\Entity\Name;
+use AnimeDb\Bundle\CatalogBundle\Entity\Source;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Refiller\Item as ItemRefiller;
+use AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Refiller\Refiller as RefillerPlugin;
 
-/**
- * Refiller from site world-art.ru
- * 
- * @link http://world-art.ru/
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Service
- * @author  Peter Gribanov <info@peter-gribanov.ru>
- */
 class Refiller extends RefillerPlugin
 {
     /**
-     * Name
+     * Name.
      *
      * @var string
      */
     const NAME = 'world-art';
 
     /**
-     * Title
+     * Title.
      *
      * @var string
      */
     const TITLE = 'World-Art.ru';
 
     /**
-     * List of supported fields
+     * List of supported fields.
      *
      * @var array
      */
@@ -57,35 +49,35 @@ class Refiller extends RefillerPlugin
         self::FIELD_NAMES,
         self::FIELD_STUDIO,
         self::FIELD_SOURCES,
-        self::FIELD_SUMMARY
+        self::FIELD_SUMMARY,
     ];
 
     /**
-     * Filler
+     * Filler.
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler
      */
     protected $filler;
 
     /**
-     * Search
+     * Search.
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Search
      */
     protected $search;
 
     /**
-     * Browser
+     * Browser.
      *
      * @var \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser
      */
     private $browser;
 
     /**
-     * Construct
+     * Construct.
      *
-     * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler $filler
-     * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Search $search
+     * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Filler  $filler
+     * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Search  $search
      * @param \AnimeDb\Bundle\WorldArtFillerBundle\Service\Browser $browser
      */
     public function __construct(Filler $filler, Search $search, Browser $browser)
@@ -96,30 +88,32 @@ class Refiller extends RefillerPlugin
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return self::NAME;
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return self::TITLE;
     }
 
     /**
-     * Is can refill item from source
+     * Is can refill item from source.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
-     * @param string $field
+     * @param string                                    $field
      *
-     * @return boolean
+     * @return bool
      */
     public function isCanRefill(Item $item, $field)
     {
@@ -127,10 +121,10 @@ class Refiller extends RefillerPlugin
     }
 
     /**
-     * Refill item field from source
+     * Refill item field from source.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
-     * @param string $field
+     * @param string                                    $field
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
@@ -156,16 +150,17 @@ class Refiller extends RefillerPlugin
         } elseif ($new_item = $this->filler->fill(['url' => $url, 'frames' => false])) {
             $item = $this->fillItem($item, $new_item, $field);
         }
+
         return $item;
     }
 
     /**
-     * Is can search
+     * Is can search.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
-     * @param string $field
+     * @param string                                    $field
      *
-     * @return boolean
+     * @return bool
      */
     public function isCanSearch(Item $item, $field)
     {
@@ -181,14 +176,15 @@ class Refiller extends RefillerPlugin
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * Search items for refill
+     * Search items for refill.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
-     * @param string $field
+     * @param string                                    $field
      *
      * @return array [\AnimeDb\Bundle\CatalogBundle\Plugin\Fill\Refiller\Item]
      */
@@ -203,7 +199,7 @@ class Refiller extends RefillerPlugin
                     $url,
                     $item->getCover(),
                     $item->getSummary()
-                )
+                ),
             ];
         }
 
@@ -238,11 +234,11 @@ class Refiller extends RefillerPlugin
     }
 
     /**
-     * Refill item field from search result
+     * Refill item field from search result.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
-     * @param string $field
-     * @param array $data
+     * @param string                                    $field
+     * @param array                                     $data
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
@@ -254,15 +250,16 @@ class Refiller extends RefillerPlugin
             $item->addSource($source);
             $item = $this->refill($item, $field);
         }
+
         return $item;
     }
 
     /**
-     * Fill item
+     * Fill item.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $new_item
-     * @param string $field
+     * @param string                                    $field
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item
      */
@@ -316,11 +313,12 @@ class Refiller extends RefillerPlugin
                 $item->setSummary($new_item->getSummary());
                 break;
         }
+
         return $item;
     }
 
     /**
-     * Get source for fill
+     * Get source for fill.
      *
      * @param \AnimeDb\Bundle\CatalogBundle\Entity\Item $item
      *
@@ -334,6 +332,7 @@ class Refiller extends RefillerPlugin
                 return $source->getUrl();
             }
         }
+
         return '';
     }
 }

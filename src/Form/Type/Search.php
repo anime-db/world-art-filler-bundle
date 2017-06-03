@@ -1,8 +1,7 @@
 <?php
 /**
- * AnimeDb package
+ * AnimeDb package.
  *
- * @package   AnimeDb
  * @author    Peter Gribanov <info@peter-gribanov.ru>
  * @copyright Copyright (c) 2011, Peter Gribanov
  * @license   http://opensource.org/licenses/GPL-3.0 GPL v3
@@ -15,37 +14,33 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Search from
- *
- * @package AnimeDb\Bundle\WorldArtFillerBundle\Form\Type
- * @author  Peter Gribanov <info@peter-gribanov.ru>
+ * Search from.
  */
 class Search extends SearchForm
 {
     /**
-     * (non-PHPdoc)
-     * @see \Symfony\Component\Form\AbstractType::buildForm()
+     * @param FormBuilderInterface $builder
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
         $builder->add('type', 'choice', [
-            'choices'  => [
+            'choices' => [
                 'animation' => 'Anime',
-                'cinema' => 'Cinema'
+                'cinema' => 'Cinema',
             ],
-            'required' => false
+            'required' => false,
         ]);
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Symfony\Component\Form.AbstractType::setDefaultOptions()
+     * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'csrf_protection' => false
+            'csrf_protection' => false,
         ]);
     }
 }
