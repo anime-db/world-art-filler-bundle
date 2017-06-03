@@ -360,7 +360,7 @@ class Filler extends FillerPlugin
     /**
      * Fill item from source
      *
-     * @param array $date
+     * @param array $data
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Item|null
      */
@@ -678,7 +678,7 @@ class Filler extends FillerPlugin
     /**
      * Get real country by name
      *
-     * @param integer $id
+     * @param string $name
      *
      * @return \AnimeDb\Bundle\CatalogBundle\Entity\Country|null
      */
