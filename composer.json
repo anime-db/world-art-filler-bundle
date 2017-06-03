@@ -16,7 +16,9 @@
 	},
 	"require" : {
 		"php" : ">=5.4.0",
-		"ext-tidy" : "*",
+		"ext-tidy" : "*"
+	},
+	"require-dev" : {
 		"anime-db/catalog-bundle" : ">=0.4.17"
 	},
 	"minimum-stability" : "dev",
