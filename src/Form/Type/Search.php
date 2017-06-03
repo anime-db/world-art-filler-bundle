@@ -20,7 +20,7 @@ class Search extends SearchForm
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -28,9 +28,9 @@ class Search extends SearchForm
         $builder->add('type', 'choice', [
             'choices'  => [
                 'animation' => 'Anime',
-                'cinema' => 'Cinema'
+                'cinema'    => 'Cinema',
             ],
-            'required' => false
+            'required' => false,
         ]);
     }
 
@@ -40,7 +40,7 @@ class Search extends SearchForm
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'csrf_protection' => false
+            'csrf_protection' => false,
         ]);
     }
 }
