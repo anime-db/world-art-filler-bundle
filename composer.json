@@ -19,7 +19,10 @@
         "ext-tidy": "*"
     },
     "require-dev": {
-        "anime-db/catalog-bundle": ">=0.4.17"
+        "anime-db/catalog-bundle": ">=0.4.17",
+        "phpunit/phpunit": "^4.8.0",
+        "scrutinizer/ocular": "1.3.*",
+        "satooshi/php-coveralls": "^1.0"
     },
     "minimum-stability": "dev",
     "extra": {
